@@ -5,6 +5,8 @@ import PatientForm from "@/components/PatientForm";
 import AgentTimeline from "@/components/AgentTimeline";
 import DecisionConsole from "@/components/DecisionConsole";
 import NavPanel from "@/components/NavPanel";
+import CommandPalette from "@/components/CommandPalette";
+import { toast } from "sonner";
 import { PatientFormData, AgentStep, VerificationResult, VerificationStatus } from "@/lib/types";
 import { buildAgentSteps } from "@/lib/agentSteps";
 import { PayerBenefitData, getPayerData } from "@/lib/mockPayerData";
@@ -144,6 +146,10 @@ export default function Home() {
       await new Promise((r) => setTimeout(r, 400));
       setResult(data);
       setStatus("completed");
+      toast.success(`Verification complete — ${formData.patientName}`, {
+        description: data.bookingRecommendation?.decision?.replace(/_/g, " ") ?? "",
+        duration: 4000,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       setError(msg);
@@ -266,6 +272,22 @@ export default function Home() {
             </span>
           </div>
 
+          {/* ⌘K hint */}
+          <button
+            onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }); window.dispatchEvent(e); }}
+            style={{
+              display: "flex", alignItems: "center", gap: "5px",
+              padding: "3px 8px", borderRadius: "6px", marginRight: "8px",
+              border: "1px solid var(--color-border)",
+              background: "var(--color-surface-raised)",
+              cursor: "pointer",
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Search</span>
+            <kbd style={{ fontSize: "10px", color: "var(--color-text-faint)", fontFamily: "var(--font-mono)" }}>⌘K</kbd>
+          </button>
+
           <div className="h-3.5 w-px mx-1" style={{ background: "var(--color-border)" }} />
 
           {/* Nav items */}
@@ -309,6 +331,14 @@ export default function Home() {
 
       {/* ── Nav Panels ─────────────────────────────────── */}
       <NavPanel open={activeNav} onClose={() => setActiveNav(null)} />
+
+      {/* ── Command Palette (⌘K) ───────────────────────── */}
+      <CommandPalette
+        onLoadPatient={setFormData}
+        onRunVerification={runVerification}
+        onOpenNav={(tab) => setActiveNav(tab as NavTab)}
+        isRunning={isRunning}
+      />
 
       {/* ── Error Banner ───────────────────────────────── */}
       {error && (

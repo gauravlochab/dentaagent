@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useEffect } from "react";
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend,
+} from "recharts";
 
 type NavTab = "Verifications" | "History" | "Analytics" | "Settings" | "Profile" | null;
 
@@ -59,6 +63,11 @@ const ANALYTICS = {
     { label: "Book with Caution", count: 28, pct: 22 },
     { label: "Escalated",         count: 10, pct: 8  },
   ],
+  dailyVolume: (() => {
+    const days = ["Mar 7","Mar 8","Mar 9","Mar 10","Mar 11","Mar 12","Mar 13","Mar 14","Mar 15","Mar 16","Mar 17","Mar 18","Mar 19","Mar 20","Mar 21","Mar 22","Mar 23","Mar 24","Mar 25","Mar 26","Mar 27","Mar 28","Mar 29","Mar 30","Apr 1","Apr 2","Apr 3","Apr 4","Apr 5","Apr 6"];
+    const vols = [3,4,5,4,6,2,1,5,6,7,5,8,6,7,3,2,6,7,8,9,6,8,10,7,8,9,11,10,12,127];
+    return days.map((day, i) => ({ day, verifications: vols[i] }));
+  })(),
   topPayers: [
     { payer: "Delta Dental",    count: 41, avgTime: "31s" },
     { payer: "Cigna Dental",    count: 29, avgTime: "38s" },
@@ -200,37 +209,58 @@ function AnalyticsPanel() {
         ))}
       </div>
 
+      {/* Verification volume area chart */}
+      <div style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "12px", padding: "16px", marginBottom: "16px" }}>
+        <p style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 16px 0" }}>Verification Volume — Last 30 Days</p>
+        <ResponsiveContainer width="100%" height={140}>
+          <AreaChart data={ANALYTICS.dailyVolume} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
+            <defs>
+              <linearGradient id="volGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%"  stopColor="oklch(40% 0.16 158)" stopOpacity={0.18} />
+                <stop offset="95%" stopColor="oklch(40% 0.16 158)" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="oklch(94.5% 0.008 158)" />
+            <XAxis dataKey="day" tick={{ fontSize: 10, fill: "oklch(62% 0.010 158)", fontFamily: "var(--font-sans)" }} axisLine={false} tickLine={false} interval={4} />
+            <YAxis tick={{ fontSize: 10, fill: "oklch(62% 0.010 158)", fontFamily: "var(--font-sans)" }} axisLine={false} tickLine={false} />
+            <Tooltip
+              contentStyle={{ background: "oklch(99.5% 0.004 80)", border: "1px solid oklch(91% 0.012 158)", borderRadius: "8px", fontSize: "11px", fontFamily: "var(--font-sans)" }}
+              labelStyle={{ color: "oklch(40% 0.018 158)", fontWeight: 600 }}
+              itemStyle={{ color: "oklch(40% 0.16 158)" }}
+            />
+            <Area type="monotone" dataKey="verifications" stroke="oklch(40% 0.16 158)" strokeWidth={2} fill="url(#volGrad)" dot={false} activeDot={{ r: 4, fill: "oklch(40% 0.16 158)" }} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-        {/* Decision breakdown */}
+        {/* Decision breakdown pie */}
         <div style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "12px", padding: "16px" }}>
-          <p style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 12px 0" }}>Decision Breakdown</p>
-          {ANALYTICS.breakdown.map((b, i) => (
-            <div key={i} style={{ marginBottom: "10px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>{b.label}</span>
-                <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--color-text)", fontFamily: "var(--font-mono)" }}>{b.count}</span>
-              </div>
-              <div style={{ height: "6px", background: "var(--color-border)", borderRadius: "3px", overflow: "hidden" }}>
-                <div style={{
-                  height: "100%", borderRadius: "3px",
-                  width: `${b.pct}%`,
-                  background: i === 0 ? "var(--color-success)" : i === 1 ? "var(--color-warning)" : "var(--color-danger)",
-                  transition: "width 0.8s var(--ease-expo)",
-                }} />
-              </div>
-            </div>
-          ))}
+          <p style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 8px 0" }}>Decision Breakdown</p>
+          <ResponsiveContainer width="100%" height={150}>
+            <PieChart>
+              <Pie data={ANALYTICS.breakdown} cx="50%" cy="50%" innerRadius={38} outerRadius={58} paddingAngle={3} dataKey="count">
+                {ANALYTICS.breakdown.map((_, i) => (
+                  <Cell key={i} fill={i === 0 ? "oklch(52% 0.18 142)" : i === 1 ? "oklch(68% 0.18 75)" : "oklch(58% 0.22 25)"} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={{ background: "oklch(99.5% 0.004 80)", border: "1px solid oklch(91% 0.012 158)", borderRadius: "8px", fontSize: "11px", fontFamily: "var(--font-sans)" }} />
+              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "oklch(40% 0.018 158)" }} />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Top payers */}
         <div style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "12px", padding: "16px" }}>
           <p style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 12px 0" }}>Top Payers</p>
           {ANALYTICS.topPayers.map((p, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: i < ANALYTICS.topPayers.length - 1 ? "1px solid var(--color-border-subtle)" : "none" }}>
-              <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>{p.payer}</span>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <span style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}>{p.count} runs</span>
-                <span style={{ fontSize: "11px", color: "var(--color-primary)", fontFamily: "var(--font-mono)" }}>{p.avgTime}</span>
+            <div key={i} style={{ marginBottom: "10px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>{p.payer}</span>
+                <span style={{ fontSize: "10px", color: "var(--color-primary)", fontFamily: "var(--font-mono)" }}>{p.count}</span>
+              </div>
+              <div style={{ height: "4px", background: "var(--color-border)", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ height: "100%", borderRadius: "2px", width: `${Math.round((p.count / 45) * 100)}%`, background: "oklch(40% 0.16 158)", transition: "width 0.8s cubic-bezier(0.16,1,0.3,1)" }} />
               </div>
             </div>
           ))}
