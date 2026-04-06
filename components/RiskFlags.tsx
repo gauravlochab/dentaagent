@@ -80,7 +80,8 @@ const SEVERITY_CONFIG = {
 };
 
 export default function RiskFlags({ flags }: RiskFlagsProps) {
-  const [expanded, setExpanded] = useState<number | null>(null);
+  // Use stable flag title as expand key, not array index
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const sorted = [...flags].sort((a, b) => {
     const order = { HIGH: 0, MEDIUM: 1, LOW: 2 };
@@ -138,14 +139,14 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
 
       {/* ── Flag cards ──────────────────────────── */}
       <div className="space-y-2">
-        {sorted.map((flag, i) => {
+        {sorted.map((flag) => {
           const cfg = SEVERITY_CONFIG[flag.severity];
-          const isOpen = expanded === i;
+          const isOpen = expanded === flag.flag;
           const { Icon } = cfg;
 
           return (
             <div
-              key={i}
+              key={flag.flag}
               className={`rounded-lg overflow-hidden transition-all duration-200 ${cfg.glowClass}`}
               style={{
                 background: cfg.gradient,
@@ -156,7 +157,7 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
             >
               <button
                 className="w-full flex items-center justify-between px-3 py-2.5 text-left"
-                onClick={() => setExpanded(isOpen ? null : i)}
+                onClick={() => setExpanded(isOpen ? null : flag.flag)}
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <div className="flex-shrink-0">

@@ -146,9 +146,11 @@ export default function PatientForm({
   const canSubmit =
     !isRunning &&
     Boolean(formData.patientName) &&
+    Boolean(formData.dateOfBirth) &&
     Boolean(formData.payerName) &&
     Boolean(formData.memberId) &&
-    Boolean(formData.requestedTreatment);
+    Boolean(formData.requestedTreatment) &&
+    Boolean(formData.appointmentDate);
 
   return (
     <div className="flex flex-col h-full">
@@ -190,7 +192,7 @@ export default function PatientForm({
             </div>
           </div>
         </div>
-        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "#1e293b" }}>
+        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "#475569" }}>
           Patient &amp; insurance intake
         </p>
       </div>
@@ -199,8 +201,9 @@ export default function PatientForm({
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3.5">
 
         <div>
-          <label className={labelClass}>Patient Name</label>
+          <label htmlFor="patientName" className={labelClass}>Patient Name</label>
           <input
+            id="patientName"
             type="text"
             name="patientName"
             value={formData.patientName}
@@ -212,8 +215,9 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label className={labelClass}>Date of Birth</label>
+          <label htmlFor="dateOfBirth" className={labelClass}>Date of Birth</label>
           <input
+            id="dateOfBirth"
             type="date"
             name="dateOfBirth"
             value={formData.dateOfBirth}
@@ -224,8 +228,9 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label className={labelClass}>Payer / Insurance</label>
+          <label htmlFor="payerName" className={labelClass}>Payer / Insurance</label>
           <select
+            id="payerName"
             name="payerName"
             value={formData.payerName}
             onChange={handleChange}
@@ -240,8 +245,9 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label className={labelClass}>Member ID</label>
+          <label htmlFor="memberId" className={labelClass}>Member ID</label>
           <input
+            id="memberId"
             type="text"
             name="memberId"
             value={formData.memberId}
@@ -253,8 +259,9 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label className={labelClass}>Group ID</label>
+          <label htmlFor="groupId" className={labelClass}>Group ID</label>
           <input
+            id="groupId"
             type="text"
             name="groupId"
             value={formData.groupId}
@@ -267,7 +274,7 @@ export default function PatientForm({
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className={labelClass} style={{ marginBottom: 0 }}>Requested Treatment</label>
+            <label htmlFor="requestedTreatment" className={labelClass} style={{ marginBottom: 0 }}>Requested Treatment</label>
             {selectedRisk && (
               <div className="flex items-center gap-1">
                 <div
@@ -281,6 +288,7 @@ export default function PatientForm({
             )}
           </div>
           <select
+            id="requestedTreatment"
             name="requestedTreatment"
             value={formData.requestedTreatment}
             onChange={handleChange}
@@ -295,8 +303,9 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label className={labelClass}>Appointment Date</label>
+          <label htmlFor="appointmentDate" className={labelClass}>Appointment Date</label>
           <input
+            id="appointmentDate"
             type="date"
             name="appointmentDate"
             value={formData.appointmentDate}

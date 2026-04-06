@@ -188,7 +188,7 @@ export default function Home() {
           ].map((item) => (
             <button
               key={item.label}
-              className="nav-item relative flex items-center gap-1.5 px-3 h-[44px] text-[12px] font-medium"
+              className="group nav-item relative flex items-center gap-1.5 px-3 h-[44px] text-[12px] font-medium"
             >
               {item.label}
               {item.hint && (

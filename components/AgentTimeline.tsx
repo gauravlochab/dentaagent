@@ -203,7 +203,7 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
               <div className="p-3 overflow-x-auto">
                 <pre
                   className="text-[10px] font-mono leading-relaxed whitespace-pre-wrap"
-                  style={{ color: "#2d4a6b" }}
+                  style={{ color: "#64748b" }}
                 >
                   {step.evidence}
                 </pre>
@@ -308,7 +308,7 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
               <div className="flex items-center gap-2">
                 <h2 className="text-[13px] font-semibold text-[#e2e8f0] tracking-tight">Agent Reasoning Trace</h2>
               </div>
-              <p className="text-[11px] mt-0.5" style={{ color: "#2d4a6b" }}>
+              <p className="text-[11px] mt-0.5" style={{ color: "#475569" }}>
                 {isRunning
                   ? `Processing — ${completedCount} of ${steps.length} steps`
                   : result
@@ -356,7 +356,7 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
             style={{ background: "rgba(255,255,255,0.04)" }}
           >
             <div
-              className="h-full rounded-full transition-all duration-600"
+              className="h-full rounded-full"
               style={{
                 width: `${progressPct}%`,
                 background: progressPct >= 100
@@ -384,8 +384,8 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <p className="text-[13px] font-medium" style={{ color: "#1e293b" }}>No active verification</p>
-            <p className="text-[11px] mt-1" style={{ color: "#0f172a" }}>Fill in patient data and run the agent</p>
+            <p className="text-[13px] font-medium" style={{ color: "#475569" }}>No active verification</p>
+            <p className="text-[11px] mt-1" style={{ color: "#334155" }}>Fill in patient data and run the agent</p>
           </div>
         ) : (
           <div>
@@ -428,7 +428,7 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
             </button>
             {jsonExpanded && (
               <div className="p-4 overflow-x-auto" style={{ background: "#04060e" }}>
-                <pre className="text-[10px] font-mono leading-relaxed whitespace-pre-wrap" style={{ color: "#1e3a5f" }}>
+                <pre className="text-[10px] font-mono leading-relaxed whitespace-pre-wrap" style={{ color: "#475569" }}>
                   {JSON.stringify(result, null, 2)}
                 </pre>
               </div>

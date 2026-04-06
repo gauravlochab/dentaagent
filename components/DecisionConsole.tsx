@@ -310,7 +310,7 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
   useEffect(() => {
     setActionTaken(null);
     setScriptExpanded(false);
-  }, [result?.verificationId]);
+  }, [result]); // depend on object reference, not just verificationId
 
   if (!result && !isRunning) return <EmptyState isRunning={false} />;
   if (isRunning && !result) return <EmptyState isRunning={true} />;
