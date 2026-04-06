@@ -149,7 +149,7 @@ function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
 
       {/* Step card */}
       <div
-        className={`flex-1 pb-4 transition-all duration-300 ${isActive ? "opacity-100" : "opacity-35"}`}
+        className={`flex-1 pb-4 transition-all duration-300 ${isActive ? "opacity-100" : "opacity-35"} ${(step.evidence && isActive) ? "cursor-pointer" : ""}`}
       >
         <motion.div
           className={`rounded-lg px-3 py-2.5 mb-0.5 transition-all duration-300`}
@@ -429,7 +429,7 @@ export default function AgentTimeline({ steps, isRunning, result, formData, paye
 
       {/* ── Panel header ────────────────────────────── */}
       <div
-        className="px-5 py-3.5 flex-shrink-0"
+        className="px-5 py-4 flex-shrink-0"
         style={{
           background: "var(--color-surface)",
           borderBottom: "1px solid var(--color-border)",
@@ -552,8 +552,8 @@ export default function AgentTimeline({ steps, isRunning, result, formData, paye
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <p className="text-[13px] font-medium" style={{ color: "var(--color-text-muted)" }}>No active verification</p>
-            <p className="text-[11px] mt-1" style={{ color: "var(--color-text-faint)" }}>Fill in patient data and run the agent</p>
+            <p className="text-[13px] font-medium" style={{ color: "var(--color-text-muted)" }}>Ready to verify</p>
+            <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--color-text-faint)" }}>The agent will trace each verification step live — eligibility, benefits, coverage, and booking decision.</p>
           </div>
         ) : (
           <div>

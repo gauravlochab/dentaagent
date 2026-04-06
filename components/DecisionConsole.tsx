@@ -129,7 +129,7 @@ function ConfidenceArc({ score }: { score: number }) {
           >
             {score}
           </span>
-          <span className="text-[8px] font-medium" style={{ color: "var(--color-text-muted)" }}>PCT</span>
+          <span className="text-[8px] font-medium" style={{ color }}>%</span>
         </div>
       </div>
       <p className="text-[11px] leading-relaxed flex-1" style={{ color: "var(--color-text-secondary)" }}>
@@ -276,7 +276,7 @@ function EmptyState({ isRunning }: { isRunning: boolean }) {
   return (
     <div className="flex flex-col h-full">
       <div
-        className="px-5 py-3.5 flex-shrink-0"
+        className="px-5 py-4 flex-shrink-0"
         style={{
           background: "var(--color-surface)",
           borderBottom: "1px solid var(--color-border)",
@@ -288,14 +288,14 @@ function EmptyState({ isRunning }: { isRunning: boolean }) {
             style={{ background: isRunning ? "var(--color-primary)" : "var(--color-border)" }}
           />
           <h2
-            className="text-[13px] font-semibold"
+            className="text-[13px] font-semibold tracking-tight"
             style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
           >
             Decision Console
           </h2>
         </div>
         <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "var(--color-text-muted)" }}>
-          {isRunning ? "Processing verification..." : "Verification results & actions"}
+          {isRunning ? "Analyzing coverage — please wait..." : "Verification results & booking guidance"}
         </p>
       </div>
 
@@ -329,9 +329,9 @@ function EmptyState({ isRunning }: { isRunning: boolean }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p className="text-[12px] font-medium" style={{ color: "var(--color-text-muted)" }}>Awaiting verification</p>
-          <p className="text-[11px] mt-1" style={{ color: "var(--color-text-faint)" }}>
-            Results will appear here after the agent completes
+          <p className="text-[12px] font-medium" style={{ color: "var(--color-text-muted)" }}>No decision yet</p>
+          <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--color-text-faint)" }}>
+            Select a patient, fill in their insurance details, and run the agent to see the coverage decision here.
           </p>
         </div>
       )}
@@ -386,7 +386,7 @@ export default function DecisionConsole({ result, isRunning, patientName, formDa
     <div className="flex flex-col h-full">
       {/* ── Panel header ──────────────────────────── */}
       <div
-        className="px-5 py-3.5 flex-shrink-0"
+        className="px-5 py-4 flex-shrink-0"
         style={{
           background: "var(--color-surface)",
           borderBottom: "1px solid var(--color-border)",
@@ -399,7 +399,7 @@ export default function DecisionConsole({ result, isRunning, patientName, formDa
               style={{ background: "var(--color-success)" }}
             />
             <h2
-              className="text-[13px] font-semibold"
+              className="text-[13px] font-semibold tracking-tight"
               style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
             >
               Decision Console
@@ -744,7 +744,7 @@ export default function DecisionConsole({ result, isRunning, patientName, formDa
               className="text-[10px] font-semibold tracking-widest uppercase mb-3"
               style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}
             >
-              Reviewer Actions
+              Booking Action
             </p>
             <div className="flex flex-col gap-2">
               {/* Approve button — emerald primary */}
@@ -774,7 +774,10 @@ export default function DecisionConsole({ result, isRunning, patientName, formDa
                   color: "var(--color-primary)",
                   fontFamily: "var(--font-sans)",
                   borderRadius: "8px",
+                  transition: "background var(--duration-fast), transform var(--duration-fast)",
                 }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-primary-tint)"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-surface)"; (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -791,7 +794,10 @@ export default function DecisionConsole({ result, isRunning, patientName, formDa
                   color: "var(--color-danger)",
                   fontFamily: "var(--font-sans)",
                   borderRadius: "8px",
+                  transition: "background var(--duration-fast), transform var(--duration-fast)",
                 }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "oklch(93% 0.06 25)"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-danger-tint)"; (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -817,7 +823,10 @@ export default function DecisionConsole({ result, isRunning, patientName, formDa
                   cursor: "pointer",
                   marginTop: "8px",
                   fontFamily: "var(--font-sans)",
+                  transition: "background var(--duration-fast), border-color var(--duration-fast), transform var(--duration-fast)",
                 }}
+                onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.background = "var(--color-surface-raised)"; b.style.borderColor = "var(--color-primary)"; b.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.background = "var(--color-surface)"; b.style.borderColor = "var(--color-border)"; b.style.transform = ""; }}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>

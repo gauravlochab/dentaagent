@@ -157,7 +157,7 @@ export default function PatientForm({
     <div className="flex flex-col h-full">
       {/* ── Panel header ──────────────────────────── */}
       <div
-        className="px-5 py-3.5 flex-shrink-0"
+        className="px-5 py-4 flex-shrink-0"
         style={{
           background: "var(--color-surface)",
           borderBottom: "1px solid var(--color-border)",
@@ -206,12 +206,12 @@ export default function PatientForm({
           className="text-[11px] mt-0.5 ml-3.5"
           style={{ color: "var(--color-text-muted)" }}
         >
-          Patient &amp; insurance intake
+          Enter patient and insurance details below
         </p>
       </div>
 
       {/* ── Form fields ───────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3.5">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
 
         <div>
           <label htmlFor="patientName" style={labelStyle}>Patient Name</label>
