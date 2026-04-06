@@ -33,10 +33,11 @@ export default function Home() {
     setResult(null);
     setError(null);
 
-    const verificationId = `VER-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000) + 10000}`;
+    // Use a placeholder ID for the animation — overwritten with the real ID from the API response
+    const placeholderId = `VER-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000) + 10000}`;
     const formRecord: Record<string, string> = { ...formData };
 
-    const initialSteps = buildAgentSteps(formData.memberId, verificationId, formRecord);
+    const initialSteps = buildAgentSteps(formData.memberId, placeholderId, formRecord);
     setSteps(initialSteps.map((s) => ({ ...s, status: "pending" })));
 
     const apiPromise = fetch("/api/verify", {

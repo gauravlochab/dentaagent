@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const remainingBenefit = payerData.annualMaximum - payerData.annualMaximumUsed;
+    const remainingBenefit = Math.max(0, payerData.annualMaximum - payerData.annualMaximumUsed);
     const annualMaxUsedPercent = Math.round(
       (payerData.annualMaximumUsed / payerData.annualMaximum) * 100
     );
@@ -95,12 +95,16 @@ PATIENT INFORMATION:
     const systemPrompt = `You are a dental insurance verification specialist AI. You have been given patient information and insurance benefit data. Your job is to:
 1. Analyze the coverage for the requested dental treatment
 2. Identify any risks, waiting periods, or exclusions
-3. Calculate estimated patient responsibility
-4. Generate a booking recommendation (SAFE_TO_BOOK / BOOK_WITH_CAUTION / ESCALATE)
+3. Calculate estimated patient responsibility (capped to annual maximum remaining)
+4. Generate a booking recommendation using ONLY these rules:
+   - ESCALATE: treatment is NOT covered, OR plan has an active exclusion/waiting period that blocks care NOW
+   - BOOK_WITH_CAUTION: treatment is covered but has risks (pre-auth required, low remaining benefit, deductible unmet, waiting period recently cleared)
+   - SAFE_TO_BOOK: treatment is covered, no blocking issues, routine case
+   Note: pre-auth required alone is NOT an escalation reason — use BOOK_WITH_CAUTION and instruct staff to obtain pre-auth before the appointment
 5. Write a natural patient-facing script for the front desk
 6. Write an internal summary for the billing team
 
-Be precise, professional, and healthcare-appropriate. Always note if pre-authorization is required.
+Be precise, professional, and healthcare-appropriate.
 
 You must respond with ONLY a valid JSON object matching this exact structure (no markdown, no explanation outside JSON):
 {
@@ -203,20 +207,25 @@ Write the patient script as a natural, warm front-desk conversation starter (3-4
   }
 }
 
-function buildFallbackResponse(payerData: ReturnType<typeof getPayerData>, treatmentRule: { covered: boolean; coveragePercentage: number; frequencyLimit: string; preAuthRequired: boolean; waitingPeriod: string; notes: string; typicalCost: number }, patientName: string, payerName: string, treatment: string) {
-  if (!payerData) return null;
-  const remaining = payerData.annualMaximum - payerData.annualMaximumUsed;
+function buildFallbackResponse(payerData: NonNullable<ReturnType<typeof getPayerData>>, treatmentRule: { covered: boolean; coveragePercentage: number; frequencyLimit: string; preAuthRequired: boolean; waitingPeriod: string; notes: string; typicalCost: number }, patientName: string, payerName: string, treatment: string) {
+  const remaining = Math.max(0, payerData.annualMaximum - payerData.annualMaximumUsed);
+  // Cap insurance payment to annual maximum remaining
   const insurancePays = treatmentRule.covered
-    ? Math.round(treatmentRule.typicalCost * (treatmentRule.coveragePercentage / 100))
+    ? Math.min(
+        Math.round(treatmentRule.typicalCost * (treatmentRule.coveragePercentage / 100)),
+        remaining
+      )
     : 0;
-  const patientPays = treatmentRule.typicalCost - insurancePays + payerData.deductibleRemaining;
+  // Only add deductible to covered treatments
+  const deductibleAdder = treatmentRule.covered ? payerData.deductibleRemaining : 0;
+  const patientPays = treatmentRule.typicalCost - insurancePays + deductibleAdder;
 
   return {
     eligibility: {
       status: "ACTIVE",
       planType: payerData.planType,
       planName: payerData.planName,
-      coveragePeriod: "January 1 – December 31, 2026",
+      coveragePeriod: `January 1 – December 31, ${new Date().getFullYear()}`,
       payerPhone: payerData.payerPhone,
     },
     benefits: {

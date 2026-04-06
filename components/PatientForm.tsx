@@ -107,7 +107,6 @@ export default function PatientForm({
   onSubmit,
   isRunning,
 }: PatientFormProps) {
-  const [sampleIndex, setSampleIndex] = React.useState(0);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -319,7 +318,7 @@ export default function PatientForm({
               return (
                 <button
                   key={i}
-                  onClick={() => { onChange(p); setSampleIndex(i + 1); }}
+                  onClick={() => { onChange(p); }}
                   className="text-left rounded-lg patient-card"
                   style={{
                     background: "rgba(255,255,255,0.02)",
