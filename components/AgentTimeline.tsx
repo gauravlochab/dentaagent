@@ -28,79 +28,66 @@ interface AgentTimelineProps {
 }
 
 function StepIcon({ status }: { status: AgentStep["status"] }) {
+  // Circle container stays mounted always — only inner content transitions.
+  // This prevents the circle from disappearing between state changes.
+  const containerStyle: React.CSSProperties = {
+    width: "28px", height: "28px", borderRadius: "50%",
+    flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+    transition: "background 280ms ease, border-color 280ms ease, box-shadow 280ms ease",
+    ...(status === "running"   && { background: "var(--color-primary-tint)", border: "1.5px solid var(--color-primary)",  boxShadow: "0 0 10px oklch(40% 0.16 158 / 0.18)" }),
+    ...(status === "completed" && { background: "var(--color-success-tint)", border: "1.5px solid var(--color-success)",  boxShadow: "0 0 8px oklch(52% 0.18 142 / 0.12)" }),
+    ...(status === "flagged"   && { background: "var(--color-danger-tint)",  border: "1.5px solid var(--color-danger)",   boxShadow: "none" }),
+    ...(status === "pending"   && { background: "var(--color-surface-raised)", border: "1.5px solid var(--color-border)", boxShadow: "none" }),
+  };
+
   return (
-    <AnimatePresence mode="wait">
-      {status === "running" && (
-        <motion.div
-          key="running"
-          initial={{ scale: 0.7, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.7, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{
-            background: "var(--color-primary-tint)",
-            border: "1.5px solid var(--color-primary)",
-            boxShadow: "0 0 10px oklch(40% 0.16 158 / 0.18)",
-          }}
-        >
-          <svg className="animate-spin h-3.5 w-3.5" style={{ color: "var(--color-primary)" }} fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-            <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-        </motion.div>
-      )}
-      {status === "completed" && (
-        <motion.div
-          key="completed"
-          initial={{ scale: 0.7, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.7, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{
-            background: "var(--color-success-tint)",
-            border: "1.5px solid var(--color-success)",
-            boxShadow: "0 0 8px oklch(52% 0.18 142 / 0.12)",
-          }}
-        >
-          <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
-        </motion.div>
-      )}
-      {status === "flagged" && (
-        <motion.div
-          key="flagged"
-          initial={{ scale: 0.7, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.7, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{
-            background: "var(--color-danger-tint)",
-            border: "1.5px solid var(--color-danger)",
-          }}
-        >
-          <svg className="w-3.5 h-3.5" style={{ color: "var(--color-danger)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </motion.div>
-      )}
-      {status === "pending" && (
-        <motion.div
-          key="pending"
-          initial={{ scale: 0.7, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.7, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ background: "var(--color-surface-raised)", border: "1.5px solid var(--color-border)" }}
-        >
-          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-text-faint)" }} />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div style={containerStyle}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        {status === "running" && (
+          <motion.span key="running"
+            initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 600, damping: 28 }}
+            style={{ display: "flex" }}
+          >
+            <svg className="animate-spin h-3.5 w-3.5" style={{ color: "var(--color-primary)" }} fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+              <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          </motion.span>
+        )}
+        {status === "completed" && (
+          <motion.span key="completed"
+            initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 600, damping: 28 }}
+            style={{ display: "flex" }}
+          >
+            <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+          </motion.span>
+        )}
+        {status === "flagged" && (
+          <motion.span key="flagged"
+            initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 600, damping: 28 }}
+            style={{ display: "flex" }}
+          >
+            <svg className="w-3.5 h-3.5" style={{ color: "var(--color-danger)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </motion.span>
+        )}
+        {status === "pending" && (
+          <motion.span key="pending"
+            initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 600, damping: 28 }}
+            style={{ display: "flex" }}
+          >
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-text-faint)" }} />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
