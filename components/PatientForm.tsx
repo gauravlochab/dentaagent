@@ -60,6 +60,40 @@ const TREATMENTS = [
   "Tooth Extraction",
 ];
 
+/* Risk level per treatment */
+const TREATMENT_RISK: Record<string, { dot: string; label: string }> = {
+  "Dental Crown":        { dot: "#f59e0b", label: "Medium" },
+  "Root Canal":          { dot: "#f59e0b", label: "Medium" },
+  "Dental Implant":      { dot: "#ef4444", label: "High" },
+  "Composite Filling":   { dot: "#22c55e", label: "Low" },
+  "Periodontal Scaling": { dot: "#f59e0b", label: "Medium" },
+  "Orthodontics":        { dot: "#ef4444", label: "High" },
+  "Teeth Whitening":     { dot: "#22c55e", label: "Low" },
+  "Tooth Extraction":    { dot: "#f59e0b", label: "Medium" },
+};
+
+/* Patient avatar initials color mapping */
+const AVATAR_COLORS = [
+  { bg: "rgba(99,102,241,0.2)", border: "rgba(99,102,241,0.4)", text: "#818cf8" },
+  { bg: "rgba(14,165,233,0.2)", border: "rgba(14,165,233,0.4)", text: "#38bdf8" },
+  { bg: "rgba(168,85,247,0.2)", border: "rgba(168,85,247,0.4)", text: "#c084fc" },
+];
+
+const OUTCOME_CONFIG = [
+  { label: "Safe", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.25)", text: "#4ade80" },
+  { label: "Caution", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", text: "#fbbf24" },
+  { label: "Escalate", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", text: "#f87171" },
+];
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 interface PatientFormProps {
   formData: PatientFormData;
   onChange: (data: PatientFormData) => void;
@@ -81,29 +115,90 @@ export default function PatientForm({
     onChange({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const loadSample = () => {
-    const next = sampleIndex % SAMPLE_PATIENTS.length;
-    onChange(SAMPLE_PATIENTS[next]);
-    setSampleIndex(next + 1);
-  };
+  /* Form completion count */
+  const fields = [
+    formData.patientName,
+    formData.dateOfBirth,
+    formData.payerName,
+    formData.memberId,
+    formData.groupId,
+    formData.requestedTreatment,
+    formData.appointmentDate,
+  ];
+  const filledCount = fields.filter(Boolean).length;
+  const totalFields = fields.length;
+  const completionPct = Math.round((filledCount / totalFields) * 100);
 
   const inputClass =
-    "w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-[#f1f5f9] placeholder-[#3a3a3a] focus:outline-none focus:border-[#6366f1] focus:ring-1 focus:ring-[#6366f1] transition-colors";
-  const labelClass = "block text-xs font-medium text-[#64748b] mb-1 uppercase tracking-wide";
+    "w-full bg-[#070a14] border rounded-lg px-3 py-2.5 text-[13px] text-[#e2e8f0] placeholder-[#1e293b] focus:outline-none transition-all duration-200";
+  const inputStyle = {
+    borderColor: "rgba(255,255,255,0.08)",
+  };
+  const inputFocusClass =
+    "focus:border-[#6366f1]/60 focus:ring-0 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1),0_0_12px_rgba(99,102,241,0.06)]";
+
+  const labelClass =
+    "block text-[10px] font-semibold text-[#1e293b] mb-1.5 uppercase tracking-[0.08em]";
+
+  const selectedRisk = formData.requestedTreatment
+    ? TREATMENT_RISK[formData.requestedTreatment]
+    : null;
+
+  const canSubmit =
+    !isRunning &&
+    Boolean(formData.patientName) &&
+    Boolean(formData.payerName) &&
+    Boolean(formData.memberId) &&
+    Boolean(formData.requestedTreatment);
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="px-5 py-4 border-b border-[#1e1e1e]">
-        <div className="flex items-center gap-2 mb-0.5">
-          <div className="w-2 h-2 rounded-full bg-[#6366f1]" />
-          <h2 className="text-sm font-semibold text-[#f1f5f9]">New Verification Request</h2>
+      {/* ── Panel header ──────────────────────────── */}
+      <div
+        className="px-5 py-3.5 border-b flex-shrink-0"
+        style={{ borderColor: "rgba(255,255,255,0.05)" }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: "#6366f1", boxShadow: "0 0 6px rgba(99,102,241,0.5)" }}
+            />
+            <h2 className="text-[13px] font-semibold text-[#e2e8f0] tracking-tight">
+              New Verification
+            </h2>
+          </div>
+          {/* Completion counter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] font-mono tabular-nums" style={{ color: filledCount === totalFields ? "#22c55e" : "#334155" }}>
+              {filledCount}/{totalFields}
+            </span>
+            <div
+              className="w-16 h-1 rounded-full overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.04)" }}
+            >
+              <div
+                className="h-full rounded-full transition-all duration-400"
+                style={{
+                  width: `${completionPct}%`,
+                  background:
+                    completionPct === 100
+                      ? "linear-gradient(90deg, #22c55e, #16a34a)"
+                      : "linear-gradient(90deg, #6366f1, #818cf8)",
+                  transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)",
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <p className="text-xs text-[#64748b] ml-4">Patient &amp; insurance intake</p>
+        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "#1e293b" }}>
+          Patient &amp; insurance intake
+        </p>
       </div>
 
-      {/* Form */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+      {/* ── Form fields ───────────────────────────── */}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3.5">
+
         <div>
           <label className={labelClass}>Patient Name</label>
           <input
@@ -112,7 +207,8 @@ export default function PatientForm({
             value={formData.patientName}
             onChange={handleChange}
             placeholder="Full name"
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass}`}
+            style={inputStyle}
           />
         </div>
 
@@ -123,7 +219,8 @@ export default function PatientForm({
             name="dateOfBirth"
             value={formData.dateOfBirth}
             onChange={handleChange}
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass}`}
+            style={inputStyle}
           />
         </div>
 
@@ -133,13 +230,12 @@ export default function PatientForm({
             name="payerName"
             value={formData.payerName}
             onChange={handleChange}
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass}`}
+            style={inputStyle}
           >
             <option value="">Select payer...</option>
             {PAYERS.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
+              <option key={p} value={p}>{p}</option>
             ))}
           </select>
         </div>
@@ -152,7 +248,8 @@ export default function PatientForm({
             value={formData.memberId}
             onChange={handleChange}
             placeholder="e.g. DD8847291"
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass} font-mono`}
+            style={inputStyle}
           />
         </div>
 
@@ -164,23 +261,36 @@ export default function PatientForm({
             value={formData.groupId}
             onChange={handleChange}
             placeholder="e.g. GRP-45892"
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass} font-mono`}
+            style={inputStyle}
           />
         </div>
 
         <div>
-          <label className={labelClass}>Requested Treatment</label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className={labelClass} style={{ marginBottom: 0 }}>Requested Treatment</label>
+            {selectedRisk && (
+              <div className="flex items-center gap-1">
+                <div
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: selectedRisk.dot }}
+                />
+                <span className="text-[9px] font-medium" style={{ color: selectedRisk.dot }}>
+                  {selectedRisk.label} risk
+                </span>
+              </div>
+            )}
+          </div>
           <select
             name="requestedTreatment"
             value={formData.requestedTreatment}
             onChange={handleChange}
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass}`}
+            style={inputStyle}
           >
             <option value="">Select treatment...</option>
             {TREATMENTS.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
+              <option key={t} value={t}>{t}</option>
             ))}
           </select>
         </div>
@@ -192,61 +302,105 @@ export default function PatientForm({
             name="appointmentDate"
             value={formData.appointmentDate}
             onChange={handleChange}
-            className={inputClass}
+            className={`${inputClass} ${inputFocusClass}`}
+            style={inputStyle}
           />
         </div>
 
-        {/* Sample patient tags */}
+        {/* ── Demo patient cards ──────────────────── */}
         <div className="pt-1">
-          <p className="text-xs text-[#64748b] mb-2">Quick load demo patient:</p>
-          <div className="flex flex-col gap-1.5">
-            {SAMPLE_PATIENTS.map((p, i) => (
-              <button
-                key={i}
-                onClick={() => { onChange(p); setSampleIndex(i + 1); }}
-                className="text-left px-3 py-2 rounded-lg border border-[#222] bg-[#0f0f0f] hover:border-[#6366f1] hover:bg-[#1a1a2e] transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-[#cbd5e1] group-hover:text-[#a5b4fc]">{p.patientName}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                    i === 0 ? "bg-[#14532d] text-[#4ade80]" :
-                    i === 1 ? "bg-[#713f12] text-[#fbbf24]" :
-                    "bg-[#450a0a] text-[#f87171]"
-                  }`}>
-                    {i === 0 ? "Safe" : i === 1 ? "Caution" : "Escalate"}
-                  </span>
-                </div>
-                <span className="text-[11px] text-[#475569]">{p.requestedTreatment} · {p.payerName}</span>
-              </button>
-            ))}
+          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-2.5" style={{ color: "#1e293b" }}>
+            Demo Patients
+          </p>
+          <div className="flex flex-col gap-2">
+            {SAMPLE_PATIENTS.map((p, i) => {
+              const avatarColor = AVATAR_COLORS[i % AVATAR_COLORS.length];
+              const outcome = OUTCOME_CONFIG[i];
+              return (
+                <button
+                  key={i}
+                  onClick={() => { onChange(p); setSampleIndex(i + 1); }}
+                  className="text-left rounded-lg patient-card"
+                  style={{
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    padding: "10px 12px",
+                  }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {/* Avatar */}
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
+                      style={{
+                        background: avatarColor.bg,
+                        border: `1px solid ${avatarColor.border}`,
+                        color: avatarColor.text,
+                      }}
+                    >
+                      {getInitials(p.patientName)}
+                    </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[12px] font-semibold truncate" style={{ color: "#94a3b8" }}>
+                          {p.patientName}
+                        </span>
+                        <span
+                          className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ml-1"
+                          style={{
+                            background: outcome.bg,
+                            border: `1px solid ${outcome.border}`,
+                            color: outcome.text,
+                          }}
+                        >
+                          {outcome.label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] block mt-0.5 truncate" style={{ color: "#1e293b" }}>
+                        {p.requestedTreatment} · {p.payerName}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="px-5 py-4 border-t border-[#1e1e1e]">
+      {/* ── CTA button ────────────────────────────── */}
+      <div
+        className="px-5 py-4 border-t flex-shrink-0"
+        style={{ borderColor: "rgba(255,255,255,0.05)" }}
+      >
         <button
           onClick={onSubmit}
-          disabled={isRunning || !formData.patientName || !formData.payerName || !formData.memberId || !formData.requestedTreatment}
-          className="w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!canSubmit}
+          className="w-full py-2.5 px-4 rounded-lg font-semibold text-[13px] text-white btn-shimmer transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
           style={{
             background: isRunning
               ? "linear-gradient(135deg, #4338ca, #3730a3)"
               : "linear-gradient(135deg, #6366f1, #4f46e5)",
-            color: "#fff",
-            boxShadow: isRunning ? "none" : "0 0 20px rgba(99,102,241,0.3)",
+            boxShadow: canSubmit && !isRunning
+              ? "0 0 24px rgba(99,102,241,0.3), 0 1px 3px rgba(0,0,0,0.4)"
+              : "none",
           }}
         >
           {isRunning ? (
             <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
               Agent Running...
             </span>
           ) : (
-            "Run Verification Agent"
+            <span className="flex items-center justify-center gap-2">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Run Verification Agent
+            </span>
           )}
         </button>
       </div>

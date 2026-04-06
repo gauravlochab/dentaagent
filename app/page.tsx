@@ -33,21 +33,18 @@ export default function Home() {
     setResult(null);
     setError(null);
 
-    // Generate verification ID early for audit step
     const verificationId = `VER-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000) + 10000}`;
     const formRecord: Record<string, string> = { ...formData };
 
     const initialSteps = buildAgentSteps(formData.memberId, verificationId, formRecord);
     setSteps(initialSteps.map((s) => ({ ...s, status: "pending" })));
 
-    // Start API call in parallel with animation
     const apiPromise = fetch("/api/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
-    // Animate steps
     for (let i = 0; i < initialSteps.length; i++) {
       await new Promise<void>((resolve) => {
         const delay = i === 0 ? 0 : STEP_DELAYS[i] - STEP_DELAYS[i - 1];
@@ -57,7 +54,6 @@ export default function Home() {
       const now = new Date();
       const ts = now.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
-      // Mark previous as completed
       if (i > 0) {
         setSteps((prev) =>
           prev.map((s, idx) =>
@@ -66,7 +62,6 @@ export default function Home() {
         );
       }
 
-      // Mark current as running
       setSteps((prev) =>
         prev.map((s, idx) =>
           idx === i ? { ...s, status: "running", timestamp: ts } : s
@@ -74,7 +69,6 @@ export default function Home() {
       );
     }
 
-    // Wait for API response
     try {
       const response = await apiPromise;
       const data = await response.json();
@@ -83,7 +77,6 @@ export default function Home() {
         throw new Error(data.error || "Verification failed");
       }
 
-      // Complete last step
       const finalTs = new Date().toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
       setSteps((prev) =>
         prev.map((s, idx) =>
@@ -91,7 +84,6 @@ export default function Home() {
         )
       );
 
-      // Short delay then show results
       await new Promise((r) => setTimeout(r, 400));
       setResult(data);
       setStatus("completed");
@@ -108,73 +100,139 @@ export default function Home() {
 
   const isRunning = status === "running";
 
+  const statusLabel = isRunning
+    ? "Agent running"
+    : status === "completed"
+    ? "Verification complete"
+    : status === "error"
+    ? "Error occurred"
+    : "Ready";
+
   return (
-    <div className="flex flex-col h-screen bg-[#0a0a0a] grid-bg overflow-hidden">
-      {/* Top Nav */}
-      <header className="flex-shrink-0 flex items-center justify-between px-6 py-3 border-b border-[#161616] bg-[#0a0a0a] z-10">
-        <div className="flex items-center gap-3">
+    <div className="flex flex-col h-screen bg-[#080c18] grid-bg overflow-hidden" style={{ position: "relative", zIndex: 1 }}>
+
+      {/* ── Top Navigation ─────────────────────────────── */}
+      <header
+        className="flex-shrink-0 flex items-center justify-between px-5 border-b border-[#ffffff08] bg-[#080c18]/90 backdrop-blur-md z-20 nav-top-border"
+        style={{ height: "44px" }}
+      >
+        {/* Left: Logo + breadcrumb */}
+        <div className="flex items-center gap-4">
           {/* Logo mark */}
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #6366f1, #4f46e5)" }}
-          >
-            <svg className="w-4.5 h-4.5 text-white" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
+              style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", boxShadow: "0 0 12px rgba(99,102,241,0.35)" }}
+            >
+              <svg className="w-3.5 h-3.5 text-white" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <span className="text-[13px] font-semibold text-[#e2e8f0] tracking-tight">StafGo</span>
+          </div>
+
+          {/* Breadcrumb divider */}
+          <div className="flex items-center gap-1.5 text-[#1e293b]">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
             </svg>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-[#f1f5f9] tracking-tight">DentaAgent</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1a1a2e] text-[#818cf8] border border-[#312e81] font-medium">BETA</span>
-            </div>
-            <p className="text-[11px] text-[#475569] leading-none mt-0.5">Dental Insurance Verification Copilot</p>
+
+          {/* Breadcrumb path */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[12px] text-[#334155] font-medium">Dental RCM</span>
+            <svg className="w-3 h-3 text-[#1e293b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+            </svg>
+            <span className="text-[12px] text-[#64748b] font-medium">Insurance Verification</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Status indicator */}
-          <div className="flex items-center gap-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${isRunning ? "bg-[#6366f1] animate-pulse" : status === "completed" ? "bg-[#22c55e]" : "bg-[#334155]"}`} />
-            <span className="text-[11px] text-[#475569]">
-              {isRunning ? "Agent running" : status === "completed" ? "Verification complete" : status === "error" ? "Error occurred" : "Ready"}
+        {/* Right: status + nav + avatar */}
+        <div className="flex items-center gap-1">
+          {/* Live status pill */}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border mr-3 transition-all duration-500 ${
+            isRunning
+              ? "bg-[#0f0a1e] border-[#312e81]"
+              : status === "completed"
+              ? "bg-[#031a0e] border-[#14532d]"
+              : status === "error"
+              ? "bg-[#1a0505] border-[#7f1d1d]"
+              : "bg-[#0d0d0d] border-[#1e1e1e]"
+          }`}>
+            <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+              isRunning
+                ? "bg-[#6366f1] animate-pulse"
+                : status === "completed"
+                ? "bg-[#22c55e]"
+                : status === "error"
+                ? "bg-[#ef4444]"
+                : "bg-[#1e293b]"
+            }`} />
+            <span className={`text-[11px] font-medium tracking-tight ${
+              isRunning ? "text-[#818cf8]" : status === "completed" ? "text-[#4ade80]" : status === "error" ? "text-[#f87171]" : "text-[#334155]"
+            }`}>
+              {statusLabel}
             </span>
           </div>
 
-          <div className="h-4 w-px bg-[#1e1e1e]" />
+          <div className="h-3.5 w-px bg-[#ffffff06] mx-1" />
 
           {/* Nav items */}
-          {["Verifications", "History", "Analytics", "Settings"].map((item) => (
-            <button key={item} className="text-xs text-[#475569] hover:text-[#94a3b8] transition-colors">
-              {item}
+          {[
+            { label: "Verifications", hint: "⌘V" },
+            { label: "History", hint: "⌘H" },
+            { label: "Analytics", hint: "" },
+            { label: "Settings", hint: "⌘," },
+          ].map((item) => (
+            <button
+              key={item.label}
+              className="nav-item relative flex items-center gap-1.5 px-3 h-[44px] text-[12px] font-medium"
+            >
+              {item.label}
+              {item.hint && (
+                <span className="text-[10px] text-[#1e293b] font-mono hidden group-hover:inline">{item.hint}</span>
+              )}
             </button>
           ))}
 
-          <div className="h-4 w-px bg-[#1e1e1e]" />
+          <div className="h-3.5 w-px bg-[#ffffff06] mx-1" />
 
           {/* User avatar */}
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#6366f1] to-[#4f46e5] flex items-center justify-center">
-            <span className="text-[10px] font-bold text-white">SG</span>
+          <div
+            className="w-6 h-6 rounded-full flex items-center justify-center ml-1"
+            style={{ background: "linear-gradient(135deg, #6366f1, #4f46e5)", boxShadow: "0 0 8px rgba(99,102,241,0.3)" }}
+          >
+            <span className="text-[9px] font-bold text-white tracking-tight">SG</span>
           </div>
         </div>
       </header>
 
-      {/* Error banner */}
+      {/* ── Error Banner ───────────────────────────────── */}
       {error && (
-        <div className="flex-shrink-0 flex items-center gap-3 px-6 py-2.5 bg-[#1f0000] border-b border-[#7f1d1d] text-[#f87171] text-sm">
-          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{error}</span>
-          <button onClick={() => setError(null)} className="ml-auto text-[#f87171] hover:text-white">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        <div className="flex-shrink-0 flex items-center gap-3 px-5 py-2.5 bg-[#130000] border-b border-[#7f1d1d]/40 text-[#f87171] text-[12px] z-10">
+          <div className="w-4 h-4 rounded-full bg-[#ef4444]/20 border border-[#ef4444]/30 flex items-center justify-center flex-shrink-0">
+            <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <span className="text-[#fca5a5]/80">{error}</span>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-[#475569] hover:text-[#94a3b8] transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
       )}
 
-      {/* 3-Panel Layout */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* ── 3-Panel Layout ─────────────────────────────── */}
+      <div className="flex flex-1 overflow-hidden" style={{ position: "relative", zIndex: 1 }}>
+
         {/* LEFT: Patient Intake (320px) */}
-        <div className="w-80 flex-shrink-0 border-r border-[#161616] bg-[#0d0d0d] flex flex-col overflow-hidden">
+        <div className="w-80 flex-shrink-0 border-r border-[#ffffff05] bg-[#0a0e1a] flex flex-col overflow-hidden">
           <PatientForm
             formData={formData}
             onChange={setFormData}
@@ -183,8 +241,8 @@ export default function Home() {
           />
         </div>
 
-        {/* MIDDLE: Agent Timeline (flex-1) */}
-        <div className="flex-1 border-r border-[#161616] bg-[#0a0a0a] flex flex-col overflow-hidden">
+        {/* MIDDLE: Agent Timeline */}
+        <div className="flex-1 border-r border-[#ffffff05] bg-[#080c18] flex flex-col overflow-hidden">
           <AgentTimeline
             steps={steps}
             isRunning={isRunning}
@@ -193,7 +251,7 @@ export default function Home() {
         </div>
 
         {/* RIGHT: Decision Console (380px) */}
-        <div className="w-96 flex-shrink-0 bg-[#0d0d0d] flex flex-col overflow-hidden">
+        <div className="w-96 flex-shrink-0 bg-[#0a0e1a] flex flex-col overflow-hidden">
           <DecisionConsole
             result={result}
             isRunning={isRunning}
