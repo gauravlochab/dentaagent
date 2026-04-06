@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import PatientForm from "@/components/PatientForm";
 import AgentTimeline from "@/components/AgentTimeline";
 import DecisionConsole from "@/components/DecisionConsole";
@@ -10,6 +10,10 @@ import { buildAgentSteps } from "@/lib/agentSteps";
 import { PayerBenefitData, getPayerData } from "@/lib/mockPayerData";
 
 type NavTab = "Verifications" | "History" | "Analytics" | "Settings" | "Profile" | null;
+
+const MIN_LEFT  = 220;
+const MIN_MID   = 280;
+const MIN_RIGHT = 240;
 
 const STEP_DELAYS = [0, 400, 900, 1600, 2300, 2900, 4500];
 
@@ -32,6 +36,46 @@ export default function Home() {
   const [verificationId, setVerificationId] = useState<string>("");
   const [payerData, setPayerData] = useState<PayerBenefitData | null>(null);
   const [activeNav, setActiveNav] = useState<NavTab>(null);
+
+  // Resizable panels
+  const [leftWidth, setLeftWidth]   = useState(320);
+  const [rightWidth, setRightWidth] = useState(384);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef<"left" | "right" | null>(null);
+  const startX   = useRef(0);
+  const startW   = useRef(0);
+
+  const onMouseDown = useCallback((handle: "left" | "right") => (e: React.MouseEvent) => {
+    e.preventDefault();
+    dragging.current = handle;
+    startX.current   = e.clientX;
+    startW.current   = handle === "left" ? leftWidth : rightWidth;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  }, [leftWidth, rightWidth]);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!dragging.current || !containerRef.current) return;
+      const dx = e.clientX - startX.current;
+      const total = containerRef.current.offsetWidth;
+      if (dragging.current === "left") {
+        const next = Math.min(Math.max(startW.current + dx, MIN_LEFT), total - MIN_MID - MIN_RIGHT - 10);
+        setLeftWidth(next);
+      } else {
+        const next = Math.min(Math.max(startW.current - dx, MIN_RIGHT), total - MIN_LEFT - MIN_MID - 10);
+        setRightWidth(next);
+      }
+    };
+    const onUp = () => {
+      dragging.current = null;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+  }, []);
 
   const runVerification = useCallback(async () => {
     if (status === "running") return;
@@ -301,12 +345,12 @@ export default function Home() {
       )}
 
       {/* ── 3-Panel Layout ─────────────────────────────── */}
-      <div className="flex flex-1 overflow-hidden" style={{ position: "relative", zIndex: 1 }}>
+      <div ref={containerRef} className="flex flex-1 overflow-hidden" style={{ position: "relative", zIndex: 1 }}>
 
-        {/* LEFT: Patient Intake (320px) */}
+        {/* LEFT: Patient Intake */}
         <div
-          className="w-80 flex-shrink-0 flex flex-col overflow-hidden"
-          style={{ background: "var(--color-surface)", borderRight: "1px solid var(--color-border)" }}
+          className="flex-shrink-0 flex flex-col overflow-hidden"
+          style={{ width: leftWidth, background: "var(--color-surface)" }}
         >
           <PatientForm
             formData={formData}
@@ -316,10 +360,36 @@ export default function Home() {
           />
         </div>
 
+        {/* DRAG HANDLE — left/middle */}
+        <div
+          onMouseDown={onMouseDown("left")}
+          style={{
+            width: "5px",
+            flexShrink: 0,
+            cursor: "col-resize",
+            background: "var(--color-border)",
+            position: "relative",
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = "var(--color-primary-mid)")}
+          onMouseLeave={e => (e.currentTarget.style.background = "var(--color-border)")}
+        >
+          {/* Grip dots */}
+          <div style={{
+            position: "absolute", top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            display: "flex", flexDirection: "column", gap: "3px",
+          }}>
+            {[0,1,2,3].map(i => (
+              <div key={i} style={{ width: "2px", height: "2px", borderRadius: "50%", background: "var(--color-text-faint)" }} />
+            ))}
+          </div>
+        </div>
+
         {/* MIDDLE: Agent Timeline */}
         <div
           className="flex-1 flex flex-col overflow-hidden"
-          style={{ background: "var(--color-bg)", borderRight: "1px solid var(--color-border)" }}
+          style={{ background: "var(--color-bg)", minWidth: MIN_MID }}
         >
           <AgentTimeline
             steps={steps}
@@ -331,10 +401,35 @@ export default function Home() {
           />
         </div>
 
-        {/* RIGHT: Decision Console (380px) */}
+        {/* DRAG HANDLE — middle/right */}
         <div
-          className="w-96 flex-shrink-0 flex flex-col overflow-hidden"
-          style={{ background: "var(--color-surface)" }}
+          onMouseDown={onMouseDown("right")}
+          style={{
+            width: "5px",
+            flexShrink: 0,
+            cursor: "col-resize",
+            background: "var(--color-border)",
+            position: "relative",
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = "var(--color-primary-mid)")}
+          onMouseLeave={e => (e.currentTarget.style.background = "var(--color-border)")}
+        >
+          <div style={{
+            position: "absolute", top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            display: "flex", flexDirection: "column", gap: "3px",
+          }}>
+            {[0,1,2,3].map(i => (
+              <div key={i} style={{ width: "2px", height: "2px", borderRadius: "50%", background: "var(--color-text-faint)" }} />
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT: Decision Console */}
+        <div
+          className="flex-shrink-0 flex flex-col overflow-hidden"
+          style={{ width: rightWidth, background: "var(--color-surface)" }}
         >
           <DecisionConsole
             result={result}

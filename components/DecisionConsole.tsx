@@ -358,10 +358,13 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
     bookingRecommendation,
     patientScript,
     internalSummary,
-    confidenceScore,
+    confidenceScore: rawConfidence,
     verificationId,
     timestamp,
   } = result;
+
+  // Claude returns either 0–1 (decimal) or 0–100 — normalise to 0–100
+  const confidenceScore = rawConfidence <= 1 ? Math.round(rawConfidence * 100) : Math.round(rawConfidence);
 
   const dc = DECISION_CONFIG[bookingRecommendation.decision];
 
@@ -870,28 +873,6 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
           </div>
         )}
 
-        {/* ── Powered by Claude ────────────────────── */}
-        <div
-          className="flex items-center justify-center gap-2 py-3 mb-1 rounded-lg"
-          style={{ opacity: 0.40 }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ color: "var(--color-primary)" }}>
-            <path
-              d="M12 2L22 12L12 22L2 12L12 2Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-              fill="var(--color-primary-tint)"
-            />
-            <path d="M12 7L17 12L12 17L7 12L12 7Z" fill="currentColor" opacity="0.6" />
-          </svg>
-          <span
-            className="text-[10px] font-medium tracking-wide"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            Powered by Claude
-          </span>
-        </div>
       </div>
     </div>
   );

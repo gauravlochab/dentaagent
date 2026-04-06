@@ -282,7 +282,7 @@ function SettingsPanel() {
 
       <Section title="Agent">
         <Row label="Version" value="DentaAgent-v0.1" />
-        <Row label="Language Model" value="Claude Haiku 4.5" badge="Active" />
+        <Row label="Language Model" value="DentaAgent AI v1.0" badge="Active" />
         <Row label="Rules Engine" value="RCM-RULES-v2.4.1" />
         <Row label="Auto-Approve Threshold" value="≥ 80% confidence" />
         <Row label="Human Review Threshold" value="< 65% confidence" />
