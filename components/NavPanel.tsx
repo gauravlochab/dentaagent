@@ -47,12 +47,12 @@ const HISTORY = [
 
 const ANALYTICS = {
   kpis: [
-    { label: "Verifications This Month", value: "127",     sub: "+14% vs last month",  color: "var(--color-primary)" },
-    { label: "Avg Verification Time",    value: "34s",      sub: "↓ from 15 min manual", color: "var(--color-success)" },
-    { label: "Clean Claim Rate",         value: "94.2%",    sub: "+3.1% vs Q1 2025",     color: "var(--color-success)" },
-    { label: "Denials Prevented",        value: "18",       sub: "~$24,300 protected",    color: "var(--color-warning)" },
-    { label: "Staff Hours Saved",        value: "42.3 hrs", sub: "This month",           color: "var(--color-primary)" },
-    { label: "Pre-Auth Catch Rate",      value: "100%",     sub: "All flags surfaced",   color: "var(--color-success)" },
+    { label: "Verifications This Month", value: "127",     sub: "April 2026 · +14% month-over-month",            color: "var(--color-primary)" },
+    { label: "Average Verification Time",value: "34s",     sub: "Down from 15–20 min per manual run",            color: "var(--color-success)" },
+    { label: "Clean Claim Rate",         value: "94.2%",   sub: "Up 3.1 points from Q1 2025",                    color: "var(--color-success)" },
+    { label: "Denials Prevented",        value: "18",      sub: "Est. $24,300 in recoverable revenue protected",  color: "var(--color-warning)" },
+    { label: "Billing Staff Hours Saved",value: "42.3 hrs",sub: "April 2026, across all active practices",        color: "var(--color-primary)" },
+    { label: "Pre-Auth Catch Rate",      value: "100%",    sub: "Every pre-auth requirement surfaced before scheduling", color: "var(--color-success)" },
   ],
   breakdown: [
     { label: "Safe to Book",      count: 89, pct: 70 },
@@ -183,10 +183,10 @@ function AnalyticsPanel() {
   return (
     <div>
       <h3 style={{ fontFamily: "var(--font-display)", fontSize: "18px", fontWeight: 600, color: "var(--color-text)", marginBottom: "4px" }}>
-        Analytics Dashboard
+        Performance
       </h3>
       <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "20px" }}>
-        April 2026 · StafGo Dental RCM Agent
+        April 2026 · Dental RCM Agent · StafGo Health
       </p>
 
       {/* KPI grid */}
@@ -267,25 +267,25 @@ function SettingsPanel() {
   return (
     <div>
       <h3 style={{ fontFamily: "var(--font-display)", fontSize: "18px", fontWeight: 600, color: "var(--color-text)", marginBottom: "4px" }}>
-        Settings
+        Configuration
       </h3>
       <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "20px" }}>
-        Agent configuration · Integrations · Compliance
+        Integrations · Agent · Payer Connections · Compliance
       </p>
 
-      <Section title="PMS Integration">
+      <Section title="Practice Management">
         <Row label="Primary PMS" value="Dentrix G7.4" badge="Connected" />
         <Row label="Secondary PMS" value="OpenDental 22.1" badge="Connected" />
         <Row label="Clearinghouse" value="Change Healthcare" badge="Active" />
         <Row label="Last Sync" value="Today, 4:08 PM" />
       </Section>
 
-      <Section title="Agent Configuration">
-        <Row label="Agent Version" value="DentaAgent-v0.1" />
-        <Row label="LLM Model" value="Claude Haiku 4.5" badge="Active" />
+      <Section title="Agent">
+        <Row label="Version" value="DentaAgent-v0.1" />
+        <Row label="Language Model" value="Claude Haiku 4.5" badge="Active" />
         <Row label="Rules Engine" value="RCM-RULES-v2.4.1" />
-        <Row label="Confidence Threshold" value="≥ 80% auto-approve" />
-        <Row label="Escalation Threshold" value="< 65% → human review" />
+        <Row label="Auto-Approve Threshold" value="≥ 80% confidence" />
+        <Row label="Human Review Threshold" value="< 65% confidence" />
       </Section>
 
       <Section title="Payer Connections">
@@ -297,10 +297,10 @@ function SettingsPanel() {
       </Section>
 
       <Section title="Compliance">
-        <Row label="HIPAA Mode" value="Enabled" badge="Compliant" />
-        <Row label="Audit Log Retention" value="7 years" />
-        <Row label="Data Residency" value="US-East-1 (AWS)" />
-        <Row label="Last Security Scan" value="Apr 5, 2026" badge="Passed" />
+        <Row label="HIPAA" value="Enabled · BAA on file" badge="Compliant" />
+        <Row label="Audit Retention" value="7 years · 45 CFR §164.530(j)" />
+        <Row label="Data Residency" value="AWS us-east-1" />
+        <Row label="Last Security Review" value="April 5, 2026" badge="Passed" />
       </Section>
     </div>
   );

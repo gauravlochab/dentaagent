@@ -647,30 +647,19 @@ export default function DocumentViewer({ doc, onClose }: DocumentViewerProps) {
               </div>
             </div>
 
-            {/* Scrollable content */}
-            <div
-              style={{
-                flex: 1,
-                overflowY: "auto",
-                padding: "16px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-              }}
-            >
-              {doc.sections.map((section, i) => (
-                <div
-                  key={i}
-                  style={{
-                    borderRadius: "8px",
-                    padding: "12px",
-                    background: "var(--color-surface-raised)",
-                    border: "1px solid var(--color-border-subtle)",
-                  }}
-                >
-                  <SectionRenderer section={section} />
+            {/* Scrollable content — render HTML document */}
+            <div style={{ flex: 1, overflowY: "auto", background: "#fff" }}>
+              {doc.htmlContent ? (
+                <div dangerouslySetInnerHTML={{ __html: doc.htmlContent }} />
+              ) : (
+                <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  {(doc as unknown as { sections: DocumentSection[] }).sections?.map((section, i) => (
+                    <div key={i} style={{ borderRadius: "8px", padding: "12px", background: "var(--color-surface-raised)", border: "1px solid var(--color-border-subtle)" }}>
+                      <SectionRenderer section={section} />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Footer */}
