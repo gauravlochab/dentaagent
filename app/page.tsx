@@ -4,8 +4,12 @@ import React, { useState, useCallback } from "react";
 import PatientForm from "@/components/PatientForm";
 import AgentTimeline from "@/components/AgentTimeline";
 import DecisionConsole from "@/components/DecisionConsole";
+import NavPanel from "@/components/NavPanel";
 import { PatientFormData, AgentStep, VerificationResult, VerificationStatus } from "@/lib/types";
 import { buildAgentSteps } from "@/lib/agentSteps";
+import { PayerBenefitData, getPayerData } from "@/lib/mockPayerData";
+
+type NavTab = "Verifications" | "History" | "Analytics" | "Settings" | "Profile" | null;
 
 const STEP_DELAYS = [0, 400, 900, 1600, 2300, 2900, 4500];
 
@@ -25,6 +29,9 @@ export default function Home() {
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [status, setStatus] = useState<VerificationStatus>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [verificationId, setVerificationId] = useState<string>("");
+  const [payerData, setPayerData] = useState<PayerBenefitData | null>(null);
+  const [activeNav, setActiveNav] = useState<NavTab>(null);
 
   const runVerification = useCallback(async () => {
     if (status === "running") return;
@@ -34,6 +41,12 @@ export default function Home() {
     setError(null);
 
     const placeholderId = `VER-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000) + 10000}`;
+    setVerificationId(placeholderId);
+
+    // Pre-load payer data for document generation during animation
+    const pd = getPayerData(formData.payerName);
+    setPayerData(pd);
+
     const formRecord: Record<string, string> = { ...formData };
 
     const initialSteps = buildAgentSteps(formData.memberId, placeholderId, formRecord);
@@ -214,20 +227,19 @@ export default function Home() {
           {/* Nav items */}
           {[
             { label: "Verifications", hint: "⌘V" },
-            { label: "History", hint: "⌘H" },
-            { label: "Analytics", hint: "" },
-            { label: "Settings", hint: "⌘," },
+            { label: "History",       hint: "⌘H" },
+            { label: "Analytics",     hint: "" },
+            { label: "Settings",      hint: "⌘," },
           ].map((item) => (
             <button
               key={item.label}
+              onClick={() => setActiveNav(activeNav === item.label as NavTab ? null : item.label as NavTab)}
               className="group nav-item relative flex items-center gap-1.5 px-3 h-[44px] text-[12px] font-medium"
+              style={activeNav === item.label ? { color: "var(--color-primary)" } : {}}
             >
               {item.label}
               {item.hint && (
-                <span
-                  className="text-[10px] font-mono hidden group-hover:inline"
-                  style={{ color: "var(--color-text-faint)" }}
-                >
+                <span className="text-[10px] font-mono hidden group-hover:inline" style={{ color: "var(--color-text-faint)" }}>
                   {item.hint}
                 </span>
               )}
@@ -237,17 +249,22 @@ export default function Home() {
           <div className="h-3.5 w-px mx-1" style={{ background: "var(--color-border)" }} />
 
           {/* User avatar */}
-          <div
+          <button
+            onClick={() => setActiveNav(activeNav === "Profile" ? null : "Profile")}
             className="w-6 h-6 rounded-full flex items-center justify-center ml-1"
             style={{
               background: "linear-gradient(135deg, oklch(52% 0.18 142) 0%, oklch(40% 0.16 158) 100%)",
-              boxShadow: "0 0 6px oklch(40% 0.16 158 / 0.20)",
+              boxShadow: activeNav === "Profile" ? "0 0 12px oklch(40% 0.16 158 / 0.4)" : "0 0 6px oklch(40% 0.16 158 / 0.20)",
+              border: "none", cursor: "pointer",
             }}
           >
             <span className="text-[9px] font-bold text-white tracking-tight">SG</span>
-          </div>
+          </button>
         </div>
       </header>
+
+      {/* ── Nav Panels ─────────────────────────────────── */}
+      <NavPanel open={activeNav} onClose={() => setActiveNav(null)} />
 
       {/* ── Error Banner ───────────────────────────────── */}
       {error && (
@@ -308,6 +325,9 @@ export default function Home() {
             steps={steps}
             isRunning={isRunning}
             result={result}
+            formData={formData}
+            payerData={payerData}
+            verificationId={verificationId}
           />
         </div>
 

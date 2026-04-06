@@ -1,12 +1,29 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { AgentStep, VerificationResult } from "@/lib/types";
+import { AgentStep, VerificationResult, PatientFormData } from "@/lib/types";
+import { PayerBenefitData } from "@/lib/mockPayerData";
+import { generateSourceDocuments, SourceDocument } from "@/lib/mockDocuments";
+import DocumentViewer from "@/components/DocumentViewer";
+
+/* ── Step ID mapping (name → stepId for doc lookup) ─────── */
+const STEP_NAME_TO_ID: Record<string, string> = {
+  "Patient Intake": "intake",
+  "Eligibility Check": "eligibility",
+  "Benefits Extraction": "benefits",
+  "Coverage Analysis": "coverage",
+  "Risk Assessment": "risk",
+  "Booking Decision": "booking",
+  "Audit & Compliance": "audit",
+};
 
 interface AgentTimelineProps {
   steps: AgentStep[];
   isRunning: boolean;
   result: VerificationResult | null;
+  formData: PatientFormData;
+  payerData: PayerBenefitData | null;
+  verificationId: string;
 }
 
 function StepIcon({ status }: { status: AgentStep["status"] }) {
@@ -68,11 +85,20 @@ function StepIcon({ status }: { status: AgentStep["status"] }) {
   );
 }
 
-function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; index: number }) {
+interface StepRowProps {
+  step: AgentStep;
+  isLast: boolean;
+  index: number;
+  doc: SourceDocument | undefined;
+  onViewSource: () => void;
+}
+
+function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
   const [expanded, setExpanded] = useState(false);
   const isActive = step.status !== "pending";
   const isRunning = step.status === "running";
   const isCompleted = step.status === "completed";
+  const showViewSource = (isRunning || isCompleted) && !!doc;
 
   return (
     <div
@@ -171,29 +197,76 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
             {step.description}
           </p>
 
-          {/* Evidence toggle */}
-          {step.evidence && isActive && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="mt-2 flex items-center gap-1 transition-colors group"
-              style={{ color: expanded ? "var(--color-primary)" : "var(--color-text-faint)" }}
-            >
-              <svg
-                className={`w-3 h-3 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
-                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          {/* Action row: evidence toggle + view source */}
+          <div className="flex items-center gap-3 mt-2 flex-wrap">
+            {/* Evidence toggle */}
+            {step.evidence && isActive && (
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="flex items-center gap-1 transition-colors group"
+                style={{ color: expanded ? "var(--color-primary)" : "var(--color-text-faint)" }}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-              <span
-                className="text-[10px] font-medium"
-                style={{ color: "inherit" }}
-              >
-                {expanded ? "Hide" : "View"} evidence
-              </span>
-            </button>
-          )}
+                <svg
+                  className={`w-3 h-3 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+                <span className="text-[10px] font-medium" style={{ color: "inherit" }}>
+                  {expanded ? "Hide" : "View"} evidence
+                </span>
+              </button>
+            )}
 
-          {/* Evidence panel — code editor aesthetic */}
+            {/* View Source button */}
+            {showViewSource && (
+              <button
+                onClick={onViewSource}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "3px 10px",
+                  borderRadius: "12px",
+                  background: "var(--color-primary-tint)",
+                  border: "1px solid var(--color-primary)",
+                  color: "var(--color-primary)",
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "background var(--duration-fast), box-shadow var(--duration-fast)",
+                  lineHeight: 1.4,
+                }}
+                onMouseEnter={(e) => {
+                  const btn = e.currentTarget as HTMLButtonElement;
+                  btn.style.background = "var(--color-primary-mid)";
+                  btn.style.boxShadow = "0 2px 8px oklch(40% 0.16 158 / 0.18)";
+                }}
+                onMouseLeave={(e) => {
+                  const btn = e.currentTarget as HTMLButtonElement;
+                  btn.style.background = "var(--color-primary-tint)";
+                  btn.style.boxShadow = "none";
+                }}
+              >
+                <svg
+                  style={{ width: "9px", height: "9px", flexShrink: 0 }}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                View Source
+                <svg
+                  style={{ width: "8px", height: "8px", flexShrink: 0 }}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Evidence panel */}
           {expanded && step.evidence && (
             <div
               className="mt-2 rounded-lg overflow-hidden"
@@ -246,9 +319,7 @@ function ProgressArc({ pct }: { pct: number }) {
 
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" className="-rotate-90">
-      {/* Track */}
       <circle cx="20" cy="20" r={r} fill="none" stroke="var(--color-border)" strokeWidth="2.5" />
-      {/* Fill */}
       <circle
         cx="20" cy="20" r={r}
         fill="none"
@@ -283,13 +354,22 @@ function CompleteToast({ show }: { show: boolean }) {
   );
 }
 
-export default function AgentTimeline({ steps, isRunning, result }: AgentTimelineProps) {
+export default function AgentTimeline({ steps, isRunning, result, formData, payerData, verificationId }: AgentTimelineProps) {
   const [jsonExpanded, setJsonExpanded] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [openDocStep, setOpenDocStep] = useState<string | null>(null);
   const prevResultRef = useRef<VerificationResult | null>(null);
 
   const completedCount = steps.filter((s) => s.status === "completed" || s.status === "flagged").length;
   const progressPct = steps.length > 0 ? Math.round((completedCount / steps.length) * 100) : 0;
+
+  // Generate source documents (regenerated on each relevant change)
+  const sourceDocs = steps.length > 0
+    ? generateSourceDocuments(formData, payerData, result, verificationId)
+    : {};
+
+  // Find the currently open document
+  const openDoc = openDocStep ? sourceDocs[openDocStep] ?? null : null;
 
   useEffect(() => {
     if (result && !prevResultRef.current) {
@@ -434,9 +514,19 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
           </div>
         ) : (
           <div>
-            {steps.map((step, i) => (
-              <StepRow key={step.id} step={step} isLast={i === steps.length - 1} index={i} />
-            ))}
+            {steps.map((step, i) => {
+              const stepId = STEP_NAME_TO_ID[step.name] ?? step.id;
+              return (
+                <StepRow
+                  key={step.id}
+                  step={step}
+                  isLast={i === steps.length - 1}
+                  index={i}
+                  doc={sourceDocs[stepId]}
+                  onViewSource={() => setOpenDocStep(stepId)}
+                />
+              );
+            })}
           </div>
         )}
 
@@ -493,6 +583,12 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
           </div>
         )}
       </div>
+
+      {/* ── Document Viewer overlay (within middle panel) ── */}
+      <DocumentViewer
+        doc={openDoc}
+        onClose={() => setOpenDocStep(null)}
+      />
     </div>
   );
 }
