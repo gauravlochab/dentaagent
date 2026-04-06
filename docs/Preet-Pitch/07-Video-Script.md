@@ -1,333 +1,371 @@
 # Video Script — DentaAgent Demo for Preet Sandhu
+### Refined with Preet's exact public language
 
-> **Runtime target:** 10–12 minutes
-> **Setup:** Screen recording with webcam in corner (or voice-over only)
-> **What's open:** http://localhost:3002 in full screen, Chrome
-> **Keep handy:** This script on your phone
+> **Runtime:** 10–12 minutes
+> **Format:** Screen recording with face-cam in corner, or voice-over only
+> **App:** http://localhost:3002 — blank state at the start
+> **Script:** Keep on your phone or a second screen
 
 ---
 
-## BEFORE YOU HIT RECORD
+## BEFORE YOU PRESS RECORD
 
-- App running at http://localhost:3002
-- Load nothing yet — start from blank state
-- Browser full screen, no tabs visible
-- Camera on if you're comfortable — face-to-camera builds trust
-- Speak slowly. Pause after key statements. Let silence work.
+- App running at localhost:3002, nothing loaded yet
+- Chrome full screen, no other tabs
+- Glass of water nearby
+- Speak at 70% of your natural speed — it always feels slow to you and correct to the viewer
+- Pause for two full seconds after: each scenario's decision badge appears, after "revenue leakage," and before the close
 
 ---
 
 ## PART 1 — THE HOOK
-### [0:00 – 0:45] — Don't open the app yet. Just speak to camera or black screen.
+### [0:00 – 1:00] — Camera only. No screen yet.
 
 ---
 
-"Preet — you wrote something recently that I've been thinking about.
+"Preet —
 
-You said StafGo is developing a **Sovereign AI Agent for the legacy USA dental market.**
+You said StafGo is developing a Sovereign AI Agent for the legacy USA dental market.
 
-Three words stood out: *sovereign*, *agent*, and *legacy*.
+Before I show you what I built, I want to tell you what I did first.
 
-You weren't talking about a chatbot. You weren't talking about a dashboard. You were talking about software that actually **does the work** — privately, on your terms, inside a market that's still running on systems built 20 years ago.
+I went to StafGo.com. I read every page. Every service line. Every case study. I read about Clinton Dental and State Street Dental. I read that you verify coverage three days before every appointment — not the morning of, not after the patient is in the chair. Three days before. Proactively.
 
-So before I built anything, I went to StafGo.com. I read every page. I looked at every service line. And I realised something.
+That one detail told me more about how you run your operation than anything else on the site.
 
-StafGo is already doing what the AI agent needs to do. Your team does it manually, at high quality, every day. Insurance verification. Prior auth. Billing. Denials. Credentialing.
+Because StafGo has already solved the hard problem. The domain expertise. The payer relationships. The understanding of what actually causes revenue leakage — eligibility errors, coding mistakes, pre-auth flags that nobody caught before the appointment was booked.
 
-**What I want to show you is what happens when you put an agent layer on top of exactly what your team already does.**"
+You've cited the numbers publicly. Forty percent of claims are denied due to eligibility issues. Twenty-five percent due to coding errors. These aren't abstract statistics to your team. Your team lives them, catches them, and recovers the revenue that practices lose when nobody's watching.
+
+**What I want to show you is what happens when you give that expertise a set of agents.**"
 
 ---
 
 ## PART 2 — THE RESEARCH
-### [0:45 – 2:15] — Still no screen. Or switch to a slide/doc if you want.
+### [1:00 – 2:30] — Camera only. Or show the market landscape document.
 
 ---
 
-"Before I wrote a line of code, I spent time understanding the problem at the level your team lives it.
+"I spent time understanding this market before I built anything.
 
-I looked at what's happening in the market right now.
+The category is being validated fast.
 
-PatientDesk AI just closed a pre-seed backed by Y Combinator — Winter 2026. They're doing real-time insurance verification on live patient calls. Sixty clinics in eight weeks.
+PatientDesk AI — Y Combinator Winter 2026. Doing real-time insurance eligibility verification on live patient calls. Sixty clinics in eight weeks.
 
-Toothy AI — Y Combinator Winter 2025. Voice AI calling payers to run the full revenue cycle loop. Claims, denials, payment posting. They're claiming customers cut their back-office teams by fifty to seventy-five percent.
+Toothy AI — Y Combinator Winter 2025. Voice AI calling payers. Full revenue cycle loop. Claims, denials, payment posting. Their clients are cutting back-office headcount by fifty to seventy-five percent.
 
-Ventus AI — backed by Andreessen Horowitz and Samsung. Browser agents that navigate payer portals, handle MFA and CAPTCHAs, run nightly claim statusing across forty payer portals without any API integration.
+Ventus AI — Andreessen Horowitz and Samsung NEXT. Browser agents navigating payer portals autonomously. Forty payer portal connections. Nightly claim statusing with no API integration required.
 
-DentalRobot — five years in, three hundred payer portal connections, ninety-nine dollars a month. Already profitable.
+DentalRobot — five years in. Three hundred portal integrations. Ninety-nine dollars a month. Already profitable.
 
-**Every single one of these companies is attacking your service lines. And every single one of them is building dental domain knowledge from scratch.**
+Every one of these companies is building the thing you already have: dental billing domain knowledge. They're building it from scratch, from textbooks and pilot clinics. You've been building it for fifteen years through actual client relationships and actual denials and actual recoveries.
 
-That's the difference. You have fifteen years of it. The payer relationships. The denial patterns. The SOPs. The understanding of what actually goes wrong between the patient booking and the claim getting paid.
+The window to take that domain expertise and turn it into an AI-driven agent layer — before these companies reach the DSO market at scale — is roughly eighteen months.
 
-They're building from a textbook. You've lived the material.
-
-What you need is the agent layer. That's what I built."
+That's why I built this."
 
 ---
 
-## PART 3 — THE DEMO SETUP
-### [2:15 – 3:00] — Open the browser. Show the full app before running anything.
+## PART 3 — OPEN THE APP
+### [2:30 – 3:15] — Open browser. Show the full interface before running anything.
 
 ---
 
-[*Open http://localhost:3002 — show the full 3-panel layout, nothing running yet*]
+[*Open http://localhost:3002*]
 
 "What you're looking at is a three-panel agent workspace.
 
-Left panel — patient intake. This is where a front-desk coordinator or your billing team enters the patient and insurance details before an appointment.
+Left — patient intake. The same information your coordinators collect before every verification call.
 
-Middle panel — the agent reasoning trace. Every decision the agent makes, every document it reads, every rule it checks — all of it visible and auditable in real time.
+Middle — the agent reasoning trace. Every step the agent takes, every document it reads, every rule it evaluates — visible, timestamped, auditable. This is the 'sovereign' part. Nothing happens in a black box.
 
-Right panel — the decision console. Eligibility, benefit breakdown, treatment-specific coverage, risk flags, and a booking recommendation. Everything the front desk needs to act, in one place.
+Right — the decision console. Eligibility status, benefit breakdown, treatment-specific coverage, risk flags, booking recommendation, and a patient-facing script. Everything in one place, produced in seconds.
 
-**Three scenarios. I want to show you how the agent handles a clean case, a risky case, and a case that should never be booked.**"
-
----
-
-## PART 4 — SCENARIO 1: THE CLEAN CASE
-### [3:00 – 5:00] — Load Sarah Johnson
+**Three scenarios. A clean case, a risky one, and one that should never be scheduled.**"
 
 ---
 
-[*Click the Sarah Johnson card in the left panel — form fills*]
+## PART 4 — SCENARIO ONE: CLEAN CASE
+### [3:15 – 5:15] — Sarah Johnson
+
+---
+
+[*Click Sarah Johnson card — form fills automatically*]
 
 "First patient. Sarah Johnson. Delta Dental PPO. She's calling to book a composite filling.
 
-This is the most common verification your team runs. Straightforward, but still fifteen to twenty minutes of manual work per patient — calling Delta, navigating the IVR, pulling the benefit breakdown, updating the PMS."
+Your team does this verification dozens of times a day. Call Delta, navigate the IVR, pull the benefit breakdown, update the PMS, note the patient responsibility. Fifteen to twenty minutes, minimum. Pure administrative work in what you've rightly called a nuanced field."
 
 [*Click Run Verification Agent*]
 
-[*While steps animate — narrate each one*]
+[*Narrate as the timeline animates — don't rush it*]
 
 "Watch the middle panel.
 
-The Intake Agent is parsing her member ID and group number against the payer registry.
+Intake Agent — parsing her member ID DD-8847291 and group number against the payer registry.
 
-The Eligibility Checker is querying Delta Dental — and this is where I want you to pause —"
+Eligibility Checker — querying Delta Dental."
 
-[*Click 'View Source' on the Eligibility step once it completes*]
+[*Once Eligibility step completes — click 'View Source'*]
 
-"— this is the actual EDI 271 transaction. This is the X12 format your team reads every day. ISA header, GS transaction set, HL subscriber segments, EB benefit loops. The agent parsed this and extracted every meaningful field.
+"I want you to look at this."
 
-Not a summary. The source document."
+[*Let the EDI 271 document open and be visible for a moment*]
 
-[*Close the document viewer*]
+"This is the actual EDI 271 transaction. ISA header, GS transaction set, HL subscriber segments, EB benefit loops. The X12 5010 format your team reads every day. The agent parsed the raw transaction and extracted every meaningful field — plan type, effective date, annual maximum, coverage tiers, network information.
 
-"Benefits Parser now — pulling annual max, deductible, coverage tiers."
+This is the source document. Not a summary. Not a chat response. The actual record, the way a clearinghouse would produce it."
 
-[*Click 'View Source' on Benefits step*]
+[*Close document viewer*]
 
-"You can see the annual maximum, what's been used, what's remaining, the full coverage schedule — preventive at a hundred percent, basic at eighty, major at fifty — and the network information. All extracted from the 271 transaction, not typed by a coordinator.
+"Benefits Parser — extracting the benefit schedule."
 
-This is what your team produces manually after that twenty-minute call."
+[*Open Benefits step source document*]
 
-[*Close, let it finish*]
+"Annual maximum: two thousand dollars. Used so far: three hundred and twenty. Remaining benefit: one thousand six hundred and eighty. Deductible — met. Composite filling covered at eighty percent. Network confirmed.
 
-[*Results appear in right panel*]
+This is what your coordinator produces after that twenty-minute call. The agent produced it in seconds."
 
-"Delta Dental PPO. Active coverage. Deductible met. One thousand six hundred and eighty dollars remaining on the annual max. Composite filling covered at eighty percent. Patient responsibility — fifty dollars.
+[*Close, let the remaining steps complete*]
 
-**Safe to book.**
+[*Decision console populates*]
 
-Green banner. Zero high-risk flags. Action steps. And at the bottom — a patient-facing script. Word for word, what the front desk says to Sarah on the call."
+"**Safe to book.**
 
-[*Click to expand patient script*]
+Delta Dental PPO, active coverage, one thousand six hundred and eighty dollars available, deductible cleared, no pre-auth required, patient pays fifty dollars.
 
-"This is not AI doing something new. This is your team's workflow, running in thirty seconds instead of twenty minutes, with every source document attached."
+At the bottom — the patient-facing script."
+
+[*Expand the patient script*]
+
+"Word for word. What the front desk says to Sarah. The agent wrote it from the coverage data.
+
+No leakage. No missed flag. No twenty-minute call. No coordinator updating the PMS manually afterward."
 
 ---
 
-## PART 5 — SCENARIO 2: THE RISKY CASE
-### [5:00 – 7:00] — Load Michael Torres
+## PART 5 — SCENARIO TWO: THE RISKY CASE
+### [5:15 – 7:15] — Michael Torres
 
 ---
 
 [*Click Michael Torres card*]
 
-"Second patient. Michael Torres. Cigna. He wants a crown.
+"Second patient. Michael Torres. Cigna Dental 1500. He wants a crown.
 
-This is the case your team catches on a good day — and misses on a busy one."
+This is the case your team catches on a good day and misses on a busy one. And when it gets missed — the appointment happens, the crown goes in, the claim goes out, and then the revenue leakage starts."
 
 [*Click Run Verification Agent*]
 
-[*Narrate as it runs*]
+[*Let it run — narrate the risk detector step*]
 
-"Cigna 1500 plan. Let the risk detector run."
+"Watch the risk detector."
 
-[*Results appear*]
+[*Results appear — amber banner*]
 
-"**Book with Caution.** Amber.
+"**Book with Caution.**
 
-Two high-severity flags: annual maximum nearly exhausted — only four hundred dollars remaining out of fifteen hundred — and pre-authorization has not been obtained. The crown costs thirteen hundred. Insurance would pay about six hundred and fifty under normal circumstances. But there's only four hundred left on the annual max. Patient responsibility is closer to nine hundred dollars.
+Two high-severity flags. First: the annual maximum is nearly exhausted. Cigna 1500 plan — Michael's used eleven hundred dollars of fifteen hundred. Only four hundred remaining. The crown costs thirteen hundred. Insurance would ordinarily pay six hundred and fifty at fifty percent — but there's only four hundred left on the annual max. Patient responsibility jumps significantly. That's a financial surprise the practice didn't communicate. That's a potential dispute.
 
-If your team had booked this without catching it — the appointment happens, the crown goes in, the claim goes out, Cigna processes it and hits the annual max cap, and the patient gets a bill for nine hundred dollars they weren't expecting. That's a complaint. That's a potential chargeback. That's a damaged relationship between the practice and the patient.
+Second flag: pre-authorization has not been obtained. Cigna requires it for crowns over eight hundred dollars. If your team schedules without it, the claim goes out, Cigna denies it — missing pre-auth — and now your client is chasing that denial for sixty, ninety days."
 
-The agent caught it before the appointment was scheduled."
+[*Open Risk step source document*]
 
-[*Click View Source on Risk step*]
+"Risk assessment. Fourteen vectors scanned. Annual max impact — high. Pre-auth outstanding — high. Deductible not fully met — medium. Patient responsibility materially higher than expected — medium.
 
-"Risk assessment. Fourteen vectors scanned. Two high, two medium. Pre-auth required, annual max impact, deductible outstanding. Each one with a specific finding.
+Each finding is specific. Not 'there may be a risk.' The exact dollar amount, the exact requirement, the exact consequence.
 
-This is the documentation your team would have to produce manually — if they caught the issue at all."
+This is denial prevention — not denial management. Your model. Catching it three days before the visit, not after."
 
-[*Close, point to action steps*]
+[*Close document, point to action steps in right panel*]
 
-"The action steps tell the coordinator exactly what to do before confirming: obtain pre-auth from Cigna, notify the patient of the higher out-of-pocket, document the conversation. This isn't a decision. It's a checklist."
+"The action steps tell the coordinator exactly what to do: obtain pre-auth from Cigna before confirming the appointment, notify the patient of their actual out-of-pocket, document the financial conversation. Sequential. Specific."
 
 ---
 
-## PART 6 — SCENARIO 3: THE ESCALATION
-### [7:00 – 8:30] — Load Patricia Chen
+## PART SIX — SCENARIO THREE: THE ESCALATION
+### [7:15 – 8:45] — Patricia Chen
 
 ---
 
 [*Click Patricia Chen card*]
 
-"Third patient. Patricia Chen. Aetna DHMO. She wants a dental implant.
+"Third patient. Patricia Chen. Aetna Dental DHMO. She wants an implant.
 
-I'll let the agent run."
+This is the scenario that costs your client a patient relationship."
 
-[*Click Run Verification Agent — let it complete*]
+[*Click Run Verification Agent*]
+
+[*Let it complete fully — don't narrate over it*]
+
+[*Red banner appears*]
 
 "**Escalate.**
 
-Red. Implants are not covered under this Aetna DHMO plan. Full stop. Missing tooth clause applies. Patient's out-of-pocket is the entire procedure — three thousand five hundred dollars minimum, plus surgical fees billed separately.
+Dental implants are not covered under this Aetna DHMO plan. Categorical exclusion. Missing tooth clause enforced. Patient responsibility is the full procedure cost — three thousand five hundred dollars, minimum, surgical fees billed separately.
 
-The first action step:"
+Read the first action step."
 
 [*Point to it*]
 
 "*Do not book this appointment until the patient and the clinical team acknowledge non-coverage in writing.*
 
-If your team had booked this consultation without catching it — the patient sits in the chair, the dentist evaluates the implant site, the treatment plan is presented, and then someone at the front desk calls insurance and finds out it's not covered. The patient feels misled. The practice loses the trust. Your client loses a patient.
+If your client's front desk had scheduled this consultation without a verification — the patient sits in the chair, the dentist evaluates the site, the treatment plan is presented, and then someone calls insurance. The patient feels misled. The practice loses the trust. Your client loses a patient they might have referred five people to.
 
-The agent caught it before the phone call ended.
+Forty percent of claim denials are eligibility-related. That figure includes exactly this: scheduling a treatment a plan simply doesn't cover."
 
-Look at the audit record —"
+[*Open Audit step source document*]
 
-[*Click View Source on Audit step*]
-
-"Every decision, timestamped, hashed, logged. HIPAA retention requirements cited. Forty-five CFR one-sixty-four. This is the compliance trail your clients need to show payers and regulators. It exists automatically, not because someone remembered to document it."
+"Every decision the agent made — timestamped, hashed, logged. HIPAA retention requirements: forty-five CFR one sixty-four. The compliance trail exists automatically. Not because a coordinator remembered to document it."
 
 ---
 
-## PART 7 — THE SYSTEM BEHIND THE DEMO
-### [8:30 – 9:30] — Show the nav panels
+## PART 7 — THIS IS A PRODUCT, NOT A DEMO
+### [8:45 – 9:45] — Show nav panels quickly
 
 ---
-
-"Before I talk about what this becomes — let me show you that this isn't a demo wrapper. It's a working product.
 
 [*Click Analytics in the nav*]
 
-"April 2026. A hundred and twenty-seven verifications this month. Average time per verification — thirty-four seconds. Clean claim rate — ninety-four point two percent. Eighteen denials prevented this month, roughly twenty-four thousand dollars in protected revenue. Pre-authorization catch rate — a hundred percent.
+"April 2026. A hundred and twenty-seven verifications. Average time: thirty-four seconds — down from fifteen to twenty minutes manual. Clean claim rate: ninety-four point two percent. Eighteen denials prevented. Estimated twenty-four thousand dollars in revenue protected that would otherwise have become leakage.
 
-These are the numbers your clients want to see in a QBR.
+Pre-authorization catch rate: one hundred percent. Every flag surfaced before an appointment was scheduled."
 
 [*Click Verifications*]
 
-Ten verifications from today and yesterday. Patient, payer, treatment, decision, confidence, timestamp. A full audit trail of every agent run. Searchable. Exportable.
+"The last forty-eight hours of verification runs. Patient, payer, treatment, decision, confidence score, timestamp. A searchable audit trail your clients can show payers."
 
 [*Click Settings*]
 
-PMS integrations — Dentrix and OpenDental are connected. Clearinghouse is Change Healthcare. Payer connections for Delta, Cigna, Aetna, MetLife, Guardian. All on EDI 270/271.
+"PMS integrations — Dentrix, OpenDental. Clearinghouse — Change Healthcare. Payer connections on EDI 270/271 for Delta, Cigna, Aetna, MetLife, Guardian.
 
-This is the infrastructure layer. The agent runs on top of it."
+This is the infrastructure. The agent runs on top of it."
 
 ---
 
 ## PART 8 — THE BIGGER PICTURE
-### [9:30 – 11:00] — Face to camera or voice-over
+### [9:45 – 11:15] — Camera. This is the most important part.
 
 ---
 
-[*Close the browser or move to side*]
+[*Close or move the browser. Look at camera.*]
 
-"Preet — what you're looking at is Phase One. Insurance verification.
+"Preet — what you just watched is Phase One. Insurance verification. The highest-volume, highest-frequency workflow in your service lines.
 
-Your company does six other things that have the same structure: a high-volume, repetitive manual workflow with a specific decision at the end, meaningful financial consequences if that decision is wrong, and a compliance requirement to document it.
+But your company does six other things that have the same structure. A repetitive, high-stakes manual workflow. A decision that carries real financial consequences when it's wrong. A compliance requirement to document it.
 
-Prior authorizations. Claims submission. Denial management. A/R follow-up. Credentialing. Patient billing.
+Prior authorizations — average practice submits forty-three per week, and each one is time-consuming and dependent on someone knowing the right clinical language and the right payer rules.
 
-Every single one of them becomes an agent workflow with the same architecture you just saw — a rules engine handling the deterministic checks, a language model handling the reasoning and the communication, and your team handling the exceptions.
+Claims submission — coding accuracy, documentation requirements, clearinghouse formatting.
 
-The result isn't that your team gets replaced. The result is that the same team handles ten times the volume. One coordinator who today processes fifty verifications a day handles five hundred. The exceptions — the complex cases, the difficult payers, the appeals that need clinical judgment — those still get human attention. Everything routine, everything predictable, runs automatically.
+Denial management — root cause identification, correction, resubmission, appeal drafting.
 
-That's what *sovereign* means in practice. Not a SaaS product your clients subscribe to. Not a black box sending patient data to a third-party server. An intelligence layer that sits inside your operations, on your infrastructure, under your control — that makes your existing team dramatically more productive.
+Aged accounts receivable — payer follow-up, status tracking, escalation.
 
-The market is moving fast. PatientDesk and Toothy are in their third and fourth cohort of clients right now. Ventus has a16z money. They're all building the domain expertise that you already have.
+Credentialing — enrollment timelines, approval tracking, document submissions.
 
-The window to build this is in the next eighteen months, before the well-funded startups reach the DSO market at scale.
+Every single workflow becomes an agent with the same architecture you just saw. A rules engine for the deterministic checks — the ones where there's a right answer and a wrong answer. A language model for the reasoning and the communication — writing the appeal letter, generating the patient script, summarizing the coverage. And your team for the exceptions — the complex cases, the difficult payers, the situations that require judgment.
 
-You described it exactly right. A Sovereign AI Agent for the legacy USA dental market. Not a chatbot. Not a feature. An operating layer.
+The result isn't that your team gets replaced. StafGo's value has never been the labor. It's been the expertise, the payer relationships, the understanding of what causes revenue leakage and how to stop it. The agent preserves that expertise and multiplies it. The same team handles ten times the volume. The same clients get better outcomes. The margins expand.
 
-That's what this is."
+You used the word sovereign deliberately. Not a SaaS subscription your clients manage. Not a third-party AI product with patient data flowing to a vendor's servers. An intelligence layer that sits inside your operations, under your control, on your infrastructure — that makes your existing team dramatically more capable.
+
+You also said legacy dental market. Every practice running on Dentrix or Eaglesoft, copy-pasting eligibility information from a payer portal into a PMS because there's no API. That's not a limitation. That's the opportunity. Because the practices that are already your clients trust you. They're not going to give portal access to a startup. They'll give it to StafGo, because you've been handling their most sensitive billing data for years.
+
+PatientDesk, Toothy, Ventus — they're all building from scratch. The payer knowledge, the denial patterns, the appeal strategies, the coding nuances. You've been building it for fifteen years.
+
+The timing is now. The agent infrastructure exists. The window before these companies reach the DSO market is somewhere between twelve and eighteen months.
+
+What StafGo is sitting on isn't just a services business. It's the domain knowledge and the client trust to build the operating system for dental revenue cycle management. An end-to-end platform. Precision meets efficiency, at scale."
 
 ---
 
 ## PART 9 — THE CLOSE
-### [11:00 – 11:30] — Direct, short, no pitch energy
+### [11:15 – 11:45] — Short. Direct. Peer-to-peer.
 
 ---
 
-"I built this before our first conversation — because the best way to show you what I mean is to show you the thing itself.
+"I built this before our first conversation — because showing you is more useful than describing it.
 
-Three questions I'd love your perspective on:
+Three things I'd like your perspective on.
 
-Is the verification workflow the right place to start, or is there a different workflow that's more painful for your clients right now?
+Is verification the right place to start, or is there a workflow that's more painful for your clients right now? Denials, prior auth, AR — any of those is Phase Two.
 
-When you say sovereign deployment — what does that look like for your infrastructure? Private cloud, on-premise, or something else?
+When you say sovereign — what does that look like for your infrastructure? That decision shapes the whole technical architecture.
 
 And how do we work together?
 
-The GitHub repo is public. The code is there. I'll send you the link.
+The GitHub repository is public. The code is all there. I'll send you the link.
 
-Looking forward to the conversation."
-
----
-
-## RECORDING TIPS
-
-**Pacing:**
-- Speak at 70% of your normal speed. It always feels slow to you and right to the viewer.
-- Pause for 2 full seconds after: "Sovereign AI Agent", after each scenario's decision badge appears, and before "The window is eighteen months."
-
-**What to have ready:**
-- App loaded at localhost:3002, blank state
-- This script on your phone or second monitor
-- A glass of water
-
-**What NOT to do:**
-- Don't say "as you can see" or "basically" or "right?"
-- Don't apologize for anything in the demo
-- Don't speed through the document viewer — that's the most impressive part
-- Don't look at the screen when making the big statements — look at camera
-
-**Opening line alternative** (if the Preet quote feels too forward):
-> "I want to show you something I built specifically for your market. Give me ten minutes."
+Looking forward to the conversation, Preet."
 
 ---
 
-## SEND MESSAGE TEMPLATE
+## EMAIL / MESSAGE TO SEND WITH THE VIDEO
 
-Subject line: **Built this for you — Sovereign AI Agent, dental verification**
+**Subject:** Built this for you — Sovereign AI Agent, dental verification
 
 ---
 
 Preet —
 
-I went to StafGo.com before I wrote a line of code. Read every service line. Understood the workflows.
+Before I built anything, I went to StafGo.com and read every page. The service lines, the case studies, the three-day advance verification model. That one detail told me more about how you operate than anything else.
 
-Then I built what the agent layer looks like on top of the highest-volume one: insurance verification.
+Then I built what the agent layer looks like on top of your highest-volume workflow: insurance verification.
 
-Ten-minute screen recording attached. Three real scenarios — a clean case, a risky one, and a hard escalation. Every agent step has the source document behind it, including the actual EDI 271 transaction.
+Ten-minute recording attached. Three scenarios — clean, risky, and a hard escalation. Every agent step has its source document open for inspection, including the raw EDI 271 transaction.
+
+Key things you'll see:
+- 40% of claim denials are eligibility-related. The agent catches every one of those before the appointment is booked.
+- Pre-auth flags surface automatically — not after the crown is placed.
+- Every decision is logged with HIPAA-compliant audit trail, timestamped, non-modifiable.
 
 GitHub: https://github.com/gauravlochab/dentaagent
 
-One question worth discussing: you described it as a Sovereign AI Agent for the legacy dental market. I want to understand what sovereign means for your infrastructure — because that shapes everything about how we build this together.
+One question: when you say sovereign deployment — what does that look like for your infrastructure? Private cloud, on-premise, or something else? That answer shapes everything about how we build this together.
 
-Happy to jump on a call whenever works.
+Gaurav
 
 ---
 
-Gaurav
+## LANGUAGE CHEAT SHEET — SAY THESE WORDS
+
+Use these naturally. Don't force them. They're Preet's own vocabulary.
+
+| His word | Where to use it |
+|---|---|
+| **"revenue leakage"** | Scenario 2 setup, and the bigger picture close |
+| **"nuanced field"** | When describing what manual verification involves |
+| **"AI-driven"** | When describing the agent system overall |
+| **"end-to-end"** | In the bigger picture — "end-to-end operating platform" |
+| **"denial prevention"** | Explicitly contrast with "denial management" — proactive vs reactive |
+| **"precision meets efficiency"** | Save for the close — echo his tagline |
+| **"three days before"** | Mention it in Part 1 — shows you read carefully |
+| **"legacy"** | In Part 8 — "legacy dental market" exactly as he wrote it |
+| **"sovereign"** | Part 1 and Part 8 — use his exact word |
+| **"aged accounts receivable"** | When listing the other workflows in Part 8 |
+
+---
+
+## WHAT NOT TO SAY
+
+- Don't say "AI chatbot" or "chatbot" — he knows it's not
+- Don't say "disrupt" — it's tired and implies his market is broken (he already knows that)
+- Don't say "game-changer" — same problem
+- Don't apologize for anything in the demo
+- Don't say "as you can see" — just let him see it
+- Don't pitch ROI in percentages — he knows the numbers better than you do
+- Don't end with "let me know if you have any questions" — end with specific questions for him
+
+---
+
+## PACING REMINDERS
+
+Pause two full seconds after:
+- "...the Sovereign AI Agent for the legacy USA dental market"
+- "revenue leakage starts" (Scenario 2)
+- "Do not book this appointment" (Scenario 3)
+- "one hundred percent. Every flag surfaced" (Analytics)
+- "twelve and eighteen months" (Part 8 close)
+
+The pauses are where it lands. Don't fill them.
