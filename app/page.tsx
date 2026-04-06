@@ -319,6 +319,12 @@ export default function Home() {
             <kbd style={{ fontSize: "10px", color: "var(--color-text-faint)", fontFamily: "var(--font-mono)" }}>⌘K</kbd>
           </button>
 
+          <ShortcutsOverlay
+            onLoadSarah={() => setFormData(SARAH_PATIENT)}
+            onLoadMichael={() => setFormData(MICHAEL_PATIENT)}
+            onLoadPatricia={() => setFormData(PATRICIA_PATIENT)}
+          />
+
           <div className="h-3.5 w-px mx-1" style={{ background: "var(--color-border)" }} />
 
           {/* Nav items */}
@@ -371,11 +377,6 @@ export default function Home() {
         isRunning={isRunning}
       />
 
-      <ShortcutsOverlay
-        onLoadSarah={() => setFormData(SARAH_PATIENT)}
-        onLoadMichael={() => setFormData(MICHAEL_PATIENT)}
-        onLoadPatricia={() => setFormData(PATRICIA_PATIENT)}
-      />
 
       {/* ── Error Banner ───────────────────────────────── */}
       {error && (

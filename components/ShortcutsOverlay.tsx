@@ -103,6 +103,29 @@ export default function ShortcutsOverlay({ onLoadSarah, onLoadMichael, onLoadPat
 
   return (
     <>
+      {/* Trigger button */}
+      <button
+        onClick={() => setOpen(true)}
+        title="Keyboard shortcuts (?)"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2px 7px",
+          borderRadius: "5px",
+          border: "1px solid var(--color-border)",
+          background: "var(--color-surface-raised)",
+          cursor: "pointer",
+          fontFamily: "var(--font-mono)",
+          fontSize: "11px",
+          fontWeight: 600,
+          color: "var(--color-text-muted)",
+          lineHeight: 1,
+          height: "24px",
+        }}
+      >
+        [?]
+      </button>
       <AnimatePresence>
         {open && (
           <>
