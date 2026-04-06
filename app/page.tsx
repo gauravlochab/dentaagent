@@ -6,6 +6,7 @@ import AgentTimeline from "@/components/AgentTimeline";
 import DecisionConsole from "@/components/DecisionConsole";
 import NavPanel from "@/components/NavPanel";
 import CommandPalette from "@/components/CommandPalette";
+import ShortcutsOverlay from "@/components/ShortcutsOverlay";
 import { toast } from "sonner";
 import { PatientFormData, AgentStep, VerificationResult, VerificationStatus } from "@/lib/types";
 import { buildAgentSteps } from "@/lib/agentSteps";
@@ -27,6 +28,36 @@ const EMPTY_FORM: PatientFormData = {
   groupId: "",
   requestedTreatment: "",
   appointmentDate: "",
+};
+
+const SARAH_PATIENT: PatientFormData = {
+  patientName: "Sarah Johnson",
+  dateOfBirth: "1985-03-15",
+  payerName: "Delta Dental",
+  memberId: "DD8847291",
+  groupId: "GRP-45892",
+  requestedTreatment: "Composite Filling",
+  appointmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+};
+
+const MICHAEL_PATIENT: PatientFormData = {
+  patientName: "Michael Torres",
+  dateOfBirth: "1972-09-28",
+  payerName: "Cigna Dental",
+  memberId: "CIG-3847291",
+  groupId: "CIG-GRP-9923",
+  requestedTreatment: "Dental Crown",
+  appointmentDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+};
+
+const PATRICIA_PATIENT: PatientFormData = {
+  patientName: "Patricia Chen",
+  dateOfBirth: "1990-11-04",
+  payerName: "Aetna Dental",
+  memberId: "AET-5523891",
+  groupId: "AET-77443",
+  requestedTreatment: "Dental Implant",
+  appointmentDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
 };
 
 export default function Home() {
@@ -340,6 +371,12 @@ export default function Home() {
         isRunning={isRunning}
       />
 
+      <ShortcutsOverlay
+        onLoadSarah={() => setFormData(SARAH_PATIENT)}
+        onLoadMichael={() => setFormData(MICHAEL_PATIENT)}
+        onLoadPatricia={() => setFormData(PATRICIA_PATIENT)}
+      />
+
       {/* ── Error Banner ───────────────────────────────── */}
       {error && (
         <div
@@ -465,6 +502,7 @@ export default function Home() {
             result={result}
             isRunning={isRunning}
             patientName={formData.patientName}
+            formData={formData}
           />
         </div>
       </div>

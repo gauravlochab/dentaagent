@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { VerificationResult } from "@/lib/types";
+import { motion } from "framer-motion";
+import { VerificationResult, PatientFormData } from "@/lib/types";
+import { downloadVerificationPdf } from "@/lib/generatePdf";
 import RiskFlags from "./RiskFlags";
 
 interface DecisionConsoleProps {
   result: VerificationResult | null;
   isRunning: boolean;
   patientName: string;
+  formData: PatientFormData;
 }
 
 function formatCurrency(n: number) {
@@ -337,7 +340,7 @@ function EmptyState({ isRunning }: { isRunning: boolean }) {
 }
 
 /* ── Main component ──────────────────────────────────── */
-export default function DecisionConsole({ result, isRunning, patientName }: DecisionConsoleProps) {
+export default function DecisionConsole({ result, isRunning, patientName, formData }: DecisionConsoleProps) {
   const [scriptExpanded, setScriptExpanded] = useState(false);
   const [actionTaken, setActionTaken] = useState<string | null>(null);
 
@@ -425,11 +428,20 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
       </div>
 
       {/* ── Scrollable content ────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <motion.div
+        key={result?.verificationId}
+        className="flex-1 overflow-y-auto px-4 py-3"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      >
 
         {/* ── Booking decision banner ─────────────── */}
-        <div
-          className="rounded-xl p-4 mb-3 fade-in-up"
+        <motion.div
+          className="rounded-xl p-4 mb-3"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30, delay: 0.1 }}
           style={{
             background: dc.bg,
             border: `1px solid ${dc.border}`,
@@ -487,7 +499,7 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* ── Eligibility ─────────────────────────── */}
         <SectionCard
@@ -786,6 +798,34 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
                 </svg>
                 Escalate to Senior
               </button>
+              {/* Download PDF button */}
+              <button
+                onClick={() => result && downloadVerificationPdf(result, formData)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  width: "100%",
+                  padding: "8px 0",
+                  borderRadius: "8px",
+                  border: "1px solid var(--color-border)",
+                  background: "var(--color-surface)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "var(--color-text-secondary)",
+                  cursor: "pointer",
+                  marginTop: "8px",
+                  fontFamily: "var(--font-sans)",
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download Verification Report
+              </button>
             </div>
           </div>
         ) : (
@@ -873,7 +913,7 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
           </div>
         )}
 
-      </div>
+      </motion.div>
     </div>
   );
 }

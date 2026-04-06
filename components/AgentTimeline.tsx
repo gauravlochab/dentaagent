@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { AgentStep, VerificationResult, PatientFormData } from "@/lib/types";
 import { PayerBenefitData } from "@/lib/mockPayerData";
 import { generateSourceDocuments, SourceDocument } from "@/lib/mockDocuments";
@@ -27,61 +28,79 @@ interface AgentTimelineProps {
 }
 
 function StepIcon({ status }: { status: AgentStep["status"] }) {
-  if (status === "running") {
-    return (
-      <div
-        className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{
-          background: "var(--color-primary-tint)",
-          border: "1.5px solid var(--color-primary)",
-          boxShadow: "0 0 10px oklch(40% 0.16 158 / 0.18)",
-        }}
-      >
-        <svg className="animate-spin h-3.5 w-3.5" style={{ color: "var(--color-primary)" }} fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-          <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-        </svg>
-      </div>
-    );
-  }
-  if (status === "completed") {
-    return (
-      <div
-        className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{
-          background: "var(--color-success-tint)",
-          border: "1.5px solid var(--color-success)",
-          boxShadow: "0 0 8px oklch(52% 0.18 142 / 0.12)",
-        }}
-      >
-        <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
-    );
-  }
-  if (status === "flagged") {
-    return (
-      <div
-        className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{
-          background: "var(--color-danger-tint)",
-          border: "1.5px solid var(--color-danger)",
-        }}
-      >
-        <svg className="w-3.5 h-3.5" style={{ color: "var(--color-danger)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </div>
-    );
-  }
   return (
-    <div
-      className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-      style={{ background: "var(--color-surface-raised)", border: "1.5px solid var(--color-border)" }}
-    >
-      <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-text-faint)" }} />
-    </div>
+    <AnimatePresence mode="wait">
+      {status === "running" && (
+        <motion.div
+          key="running"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.7, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{
+            background: "var(--color-primary-tint)",
+            border: "1.5px solid var(--color-primary)",
+            boxShadow: "0 0 10px oklch(40% 0.16 158 / 0.18)",
+          }}
+        >
+          <svg className="animate-spin h-3.5 w-3.5" style={{ color: "var(--color-primary)" }} fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        </motion.div>
+      )}
+      {status === "completed" && (
+        <motion.div
+          key="completed"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.7, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{
+            background: "var(--color-success-tint)",
+            border: "1.5px solid var(--color-success)",
+            boxShadow: "0 0 8px oklch(52% 0.18 142 / 0.12)",
+          }}
+        >
+          <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+        </motion.div>
+      )}
+      {status === "flagged" && (
+        <motion.div
+          key="flagged"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.7, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{
+            background: "var(--color-danger-tint)",
+            border: "1.5px solid var(--color-danger)",
+          }}
+        >
+          <svg className="w-3.5 h-3.5" style={{ color: "var(--color-danger)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </motion.div>
+      )}
+      {status === "pending" && (
+        <motion.div
+          key="pending"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.7, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ background: "var(--color-surface-raised)", border: "1.5px solid var(--color-border)" }}
+        >
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-text-faint)" }} />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -101,9 +120,11 @@ function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
   const showViewSource = (isRunning || isCompleted) && !!doc;
 
   return (
-    <div
-      className="flex gap-3 step-appear"
-      style={{ animationDelay: `${index * 0.04}s`, opacity: 0 }}
+    <motion.div
+      className="flex gap-3"
+      initial={{ opacity: 0, x: -16, scale: 0.97 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 400, damping: 32, delay: index * 0.06 }}
     >
       {/* Timeline spine + icon */}
       <div className="flex flex-col items-center flex-shrink-0" style={{ width: "28px" }}>
@@ -120,6 +141,7 @@ function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
                 : isRunning
                 ? "linear-gradient(to bottom, var(--color-primary), transparent)"
                 : "var(--color-border-subtle)",
+              transition: "background 0.5s cubic-bezier(0.4,0,0.2,1)",
             }}
           />
         )}
@@ -129,10 +151,8 @@ function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
       <div
         className={`flex-1 pb-4 transition-all duration-300 ${isActive ? "opacity-100" : "opacity-35"}`}
       >
-        <div
-          className={`rounded-lg px-3 py-2.5 mb-0.5 transition-all duration-300 ${
-            isRunning ? "step-running-glow" : ""
-          }`}
+        <motion.div
+          className={`rounded-lg px-3 py-2.5 mb-0.5 transition-all duration-300`}
           style={
             isRunning
               ? {
@@ -140,6 +160,22 @@ function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
                   border: "1px solid var(--color-primary-mid)",
                 }
               : {}
+          }
+          animate={
+            isRunning
+              ? {
+                  boxShadow: [
+                    "0 0 0px oklch(40% 0.16 158 / 0)",
+                    "0 0 12px oklch(40% 0.16 158 / 0.15)",
+                    "0 0 0px oklch(40% 0.16 158 / 0)",
+                  ],
+                }
+              : { boxShadow: "0 0 0px oklch(40% 0.16 158 / 0)" }
+          }
+          transition={
+            isRunning
+              ? { duration: 2, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 0.3 }
           }
         >
           {/* Step header */}
@@ -304,9 +340,9 @@ function StepRow({ step, isLast, index, doc, onViewSource }: StepRowProps) {
               </div>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -336,21 +372,28 @@ function ProgressArc({ pct }: { pct: number }) {
 
 /* ── Complete toast ───────────────────────────────────── */
 function CompleteToast({ show }: { show: boolean }) {
-  if (!show) return null;
   return (
-    <div
-      className="toast-complete absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full z-50 pointer-events-none"
-      style={{
-        background: "var(--color-success-tint)",
-        border: "1px solid var(--color-success)",
-        backdropFilter: "blur(8px)",
-      }}
-    >
-      <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-      </svg>
-      <span className="text-[11px] font-semibold" style={{ color: "var(--color-success)" }}>Verification complete</span>
-    </div>
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: -12, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -8, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 28 }}
+          className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full z-50 pointer-events-none"
+          style={{
+            background: "var(--color-success-tint)",
+            border: "1px solid var(--color-success)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-[11px] font-semibold" style={{ color: "var(--color-success)" }}>Verification complete</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
