@@ -39,48 +39,47 @@ function DangerIcon({ color }: { color: string }) {
 
 const SEVERITY_CONFIG = {
   HIGH: {
-    gradient: "linear-gradient(135deg, rgba(31,0,0,0.9) 0%, rgba(60,10,10,0.6) 100%)",
-    borderLeft: "rgba(239,68,68,0.7)",
-    border: "rgba(239,68,68,0.18)",
-    textColor: "#fca5a5",
-    descColor: "#7f1d1d",
-    badgeBg: "rgba(239,68,68,0.12)",
-    badgeBorder: "rgba(239,68,68,0.3)",
-    badgeText: "#f87171",
+    bg: "var(--color-danger-tint)",
+    borderLeft: "var(--color-danger)",
+    borderColor: "oklch(58% 0.22 25 / 0.20)",
+    textColor: "var(--color-danger)",
+    descColor: "var(--color-text-secondary)",
+    badgeBg: "var(--color-danger-tint)",
+    badgeBorder: "var(--color-danger)",
+    badgeText: "var(--color-danger)",
     glowClass: "risk-high-card",
     Icon: DangerIcon,
-    iconColor: "#ef4444",
+    iconColor: "var(--color-danger)",
   },
   MEDIUM: {
-    gradient: "linear-gradient(135deg, rgba(26,16,0,0.85) 0%, rgba(55,32,0,0.5) 100%)",
-    borderLeft: "rgba(245,158,11,0.6)",
-    border: "rgba(245,158,11,0.15)",
-    textColor: "#fcd34d",
-    descColor: "#78350f",
-    badgeBg: "rgba(245,158,11,0.1)",
-    badgeBorder: "rgba(245,158,11,0.3)",
-    badgeText: "#fbbf24",
+    bg: "var(--color-warning-tint)",
+    borderLeft: "var(--color-warning)",
+    borderColor: "oklch(68% 0.18 75 / 0.20)",
+    textColor: "var(--color-warning)",
+    descColor: "var(--color-text-secondary)",
+    badgeBg: "var(--color-warning-tint)",
+    badgeBorder: "var(--color-warning)",
+    badgeText: "var(--color-warning)",
     glowClass: "",
     Icon: WarningIcon,
-    iconColor: "#f59e0b",
+    iconColor: "var(--color-warning)",
   },
   LOW: {
-    gradient: "linear-gradient(135deg, rgba(0,26,10,0.8) 0%, rgba(5,46,22,0.5) 100%)",
-    borderLeft: "rgba(34,197,94,0.5)",
-    border: "rgba(34,197,94,0.12)",
-    textColor: "#86efac",
-    descColor: "#166534",
-    badgeBg: "rgba(34,197,94,0.1)",
-    badgeBorder: "rgba(34,197,94,0.25)",
-    badgeText: "#4ade80",
+    bg: "var(--color-success-tint)",
+    borderLeft: "var(--color-success)",
+    borderColor: "oklch(52% 0.18 142 / 0.20)",
+    textColor: "var(--color-success)",
+    descColor: "var(--color-text-secondary)",
+    badgeBg: "var(--color-success-tint)",
+    badgeBorder: "var(--color-success)",
+    badgeText: "var(--color-success)",
     glowClass: "",
     Icon: ShieldIcon,
-    iconColor: "#22c55e",
+    iconColor: "var(--color-success)",
   },
 };
 
 export default function RiskFlags({ flags }: RiskFlagsProps) {
-  // Use stable flag title as expand key, not array index
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const sorted = [...flags].sort((a, b) => {
@@ -100,12 +99,12 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
           <span
             className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold"
             style={{
-              background: "rgba(239,68,68,0.1)",
-              border: "1px solid rgba(239,68,68,0.25)",
-              color: "#f87171",
+              background: "var(--color-danger-tint)",
+              border: "1px solid var(--color-danger)",
+              color: "var(--color-danger)",
             }}
           >
-            <DangerIcon color="#f87171" />
+            <DangerIcon color="var(--color-danger)" />
             {highCount} High
           </span>
         )}
@@ -113,12 +112,12 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
           <span
             className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold"
             style={{
-              background: "rgba(245,158,11,0.1)",
-              border: "1px solid rgba(245,158,11,0.25)",
-              color: "#fbbf24",
+              background: "var(--color-warning-tint)",
+              border: "1px solid var(--color-warning)",
+              color: "var(--color-warning)",
             }}
           >
-            <WarningIcon color="#fbbf24" />
+            <WarningIcon color="var(--color-warning)" />
             {medCount} Med
           </span>
         )}
@@ -126,12 +125,12 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
           <span
             className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold"
             style={{
-              background: "rgba(34,197,94,0.1)",
-              border: "1px solid rgba(34,197,94,0.25)",
-              color: "#4ade80",
+              background: "var(--color-success-tint)",
+              border: "1px solid var(--color-success)",
+              color: "var(--color-success)",
             }}
           >
-            <ShieldIcon color="#4ade80" />
+            <ShieldIcon color="var(--color-success)" />
             {lowCount} Low
           </span>
         )}
@@ -149,10 +148,11 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
               key={flag.flag}
               className={`rounded-lg overflow-hidden transition-all duration-200 ${cfg.glowClass}`}
               style={{
-                background: cfg.gradient,
+                background: cfg.bg,
                 borderLeft: `3px solid ${cfg.borderLeft}`,
-                border: `1px solid ${cfg.border}`,
+                border: `1px solid ${cfg.borderColor}`,
                 borderLeftWidth: "3px",
+                borderLeftColor: cfg.borderLeft,
               }}
             >
               <button
@@ -163,13 +163,16 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
                   <div className="flex-shrink-0">
                     <Icon color={cfg.iconColor} />
                   </div>
-                  <span className="text-[11px] font-medium truncate" style={{ color: cfg.textColor }}>
+                  <span
+                    className="text-[11px] font-medium truncate"
+                    style={{ color: cfg.textColor }}
+                  >
                     {flag.flag}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                   <span
-                    className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                    className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
                     style={{
                       background: cfg.badgeBg,
                       border: `1px solid ${cfg.badgeBorder}`,
@@ -180,7 +183,7 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
                   </span>
                   <svg
                     className={`w-3 h-3 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                    style={{ color: "#334155" }}
+                    style={{ color: "var(--color-text-muted)" }}
                     fill="none" viewBox="0 0 24 24" stroke="currentColor"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -190,8 +193,11 @@ export default function RiskFlags({ flags }: RiskFlagsProps) {
 
               {isOpen && (
                 <div className="px-3 pb-3">
-                  <div className="h-px mb-2" style={{ background: "rgba(255,255,255,0.05)" }} />
-                  <p className="text-[11px] leading-relaxed" style={{ color: "#475569" }}>
+                  <div className="h-px mb-2" style={{ background: "var(--color-border)" }} />
+                  <p
+                    className="text-[11px] leading-relaxed"
+                    style={{ color: cfg.descColor }}
+                  >
                     {flag.explanation}
                   </p>
                 </div>

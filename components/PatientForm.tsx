@@ -61,28 +61,28 @@ const TREATMENTS = [
 ];
 
 /* Risk level per treatment */
-const TREATMENT_RISK: Record<string, { dot: string; label: string }> = {
-  "Dental Crown":        { dot: "#f59e0b", label: "Medium" },
-  "Root Canal":          { dot: "#f59e0b", label: "Medium" },
-  "Dental Implant":      { dot: "#ef4444", label: "High" },
-  "Composite Filling":   { dot: "#22c55e", label: "Low" },
-  "Periodontal Scaling": { dot: "#f59e0b", label: "Medium" },
-  "Orthodontics":        { dot: "#ef4444", label: "High" },
-  "Teeth Whitening":     { dot: "#22c55e", label: "Low" },
-  "Tooth Extraction":    { dot: "#f59e0b", label: "Medium" },
+const TREATMENT_RISK: Record<string, { color: string; label: string }> = {
+  "Dental Crown":        { color: "var(--color-warning)", label: "Medium" },
+  "Root Canal":          { color: "var(--color-warning)", label: "Medium" },
+  "Dental Implant":      { color: "var(--color-danger)",  label: "High" },
+  "Composite Filling":   { color: "var(--color-success)", label: "Low" },
+  "Periodontal Scaling": { color: "var(--color-warning)", label: "Medium" },
+  "Orthodontics":        { color: "var(--color-danger)",  label: "High" },
+  "Teeth Whitening":     { color: "var(--color-success)", label: "Low" },
+  "Tooth Extraction":    { color: "var(--color-warning)", label: "Medium" },
 };
 
-/* Patient avatar initials color mapping */
-const AVATAR_COLORS = [
-  { bg: "rgba(99,102,241,0.2)", border: "rgba(99,102,241,0.4)", text: "#818cf8" },
-  { bg: "rgba(14,165,233,0.2)", border: "rgba(14,165,233,0.4)", text: "#38bdf8" },
-  { bg: "rgba(168,85,247,0.2)", border: "rgba(168,85,247,0.4)", text: "#c084fc" },
+/* Patient avatar gradients — emerald/teal/sage */
+const AVATAR_GRADIENTS = [
+  "linear-gradient(135deg, oklch(52% 0.18 142) 0%, oklch(40% 0.16 158) 100%)",
+  "linear-gradient(135deg, oklch(60% 0.15 195) 0%, oklch(45% 0.16 210) 100%)",
+  "linear-gradient(135deg, oklch(56% 0.12 170) 0%, oklch(42% 0.14 155) 100%)",
 ];
 
 const OUTCOME_CONFIG = [
-  { label: "Safe", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.25)", text: "#4ade80" },
-  { label: "Caution", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", text: "#fbbf24" },
-  { label: "Escalate", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", text: "#f87171" },
+  { label: "Safe",    bg: "var(--color-success-tint)", border: "var(--color-success)", text: "var(--color-success)" },
+  { label: "Caution", bg: "var(--color-warning-tint)", border: "var(--color-warning)", text: "var(--color-warning)" },
+  { label: "Escalate",bg: "var(--color-danger-tint)",  border: "var(--color-danger)",  text: "var(--color-danger)" },
 ];
 
 function getInitials(name: string) {
@@ -114,7 +114,6 @@ export default function PatientForm({
     onChange({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /* Form completion count */
   const fields = [
     formData.patientName,
     formData.dateOfBirth,
@@ -128,16 +127,18 @@ export default function PatientForm({
   const totalFields = fields.length;
   const completionPct = Math.round((filledCount / totalFields) * 100);
 
-  const inputClass =
-    "w-full bg-[#070a14] border rounded-lg px-3 py-2.5 text-[13px] text-[#e2e8f0] placeholder-[#1e293b] focus:outline-none transition-all duration-200";
-  const inputStyle = {
-    borderColor: "rgba(255,255,255,0.08)",
-  };
-  const inputFocusClass =
-    "focus:border-[#6366f1]/60 focus:ring-0 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1),0_0_12px_rgba(99,102,241,0.06)]";
+  const inputClass = "input-dark";
 
-  const labelClass =
-    "block text-[10px] font-semibold text-[#1e293b] mb-1.5 uppercase tracking-[0.08em]";
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: "11.5px",
+    fontWeight: 500,
+    color: "var(--color-text-secondary)",
+    marginBottom: "6px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.06em",
+    fontFamily: "var(--font-sans)",
+  };
 
   const selectedRisk = formData.requestedTreatment
     ? TREATMENT_RISK[formData.requestedTreatment]
@@ -156,43 +157,55 @@ export default function PatientForm({
     <div className="flex flex-col h-full">
       {/* ── Panel header ──────────────────────────── */}
       <div
-        className="px-5 py-3.5 border-b flex-shrink-0"
-        style={{ borderColor: "rgba(255,255,255,0.05)" }}
+        className="px-5 py-3.5 flex-shrink-0"
+        style={{
+          background: "var(--color-surface)",
+          borderBottom: "1px solid var(--color-border)",
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div
               className="w-1.5 h-1.5 rounded-full"
-              style={{ background: "#6366f1", boxShadow: "0 0 6px rgba(99,102,241,0.5)" }}
+              style={{ background: "var(--color-primary)" }}
             />
-            <h2 className="text-[13px] font-semibold text-[#e2e8f0] tracking-tight">
+            <h2
+              className="text-[13px] font-semibold tracking-tight"
+              style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
+            >
               New Verification
             </h2>
           </div>
           {/* Completion counter */}
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-mono tabular-nums" style={{ color: filledCount === totalFields ? "#22c55e" : "#334155" }}>
+            <span
+              className="text-[10px] font-mono tabular-nums"
+              style={{ color: filledCount === totalFields ? "var(--color-success)" : "var(--color-text-muted)" }}
+            >
               {filledCount}/{totalFields}
             </span>
             <div
               className="w-16 h-1 rounded-full overflow-hidden"
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              style={{ background: "var(--color-border)" }}
             >
               <div
-                className="h-full rounded-full transition-all duration-400"
+                className="h-full rounded-full"
                 style={{
                   width: `${completionPct}%`,
                   background:
                     completionPct === 100
-                      ? "linear-gradient(90deg, #22c55e, #16a34a)"
-                      : "linear-gradient(90deg, #6366f1, #818cf8)",
+                      ? "var(--color-success)"
+                      : "var(--color-primary)",
                   transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)",
                 }}
               />
             </div>
           </div>
         </div>
-        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "#475569" }}>
+        <p
+          className="text-[11px] mt-0.5 ml-3.5"
+          style={{ color: "var(--color-text-muted)" }}
+        >
           Patient &amp; insurance intake
         </p>
       </div>
@@ -201,7 +214,7 @@ export default function PatientForm({
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3.5">
 
         <div>
-          <label htmlFor="patientName" className={labelClass}>Patient Name</label>
+          <label htmlFor="patientName" style={labelStyle}>Patient Name</label>
           <input
             id="patientName"
             type="text"
@@ -209,33 +222,30 @@ export default function PatientForm({
             value={formData.patientName}
             onChange={handleChange}
             placeholder="Full name"
-            className={`${inputClass} ${inputFocusClass}`}
-            style={inputStyle}
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="dateOfBirth" className={labelClass}>Date of Birth</label>
+          <label htmlFor="dateOfBirth" style={labelStyle}>Date of Birth</label>
           <input
             id="dateOfBirth"
             type="date"
             name="dateOfBirth"
             value={formData.dateOfBirth}
             onChange={handleChange}
-            className={`${inputClass} ${inputFocusClass}`}
-            style={inputStyle}
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="payerName" className={labelClass}>Payer / Insurance</label>
+          <label htmlFor="payerName" style={labelStyle}>Payer / Insurance</label>
           <select
             id="payerName"
             name="payerName"
             value={formData.payerName}
             onChange={handleChange}
-            className={`${inputClass} ${inputFocusClass}`}
-            style={inputStyle}
+            className={inputClass}
           >
             <option value="">Select payer...</option>
             {PAYERS.map((p) => (
@@ -245,7 +255,7 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label htmlFor="memberId" className={labelClass}>Member ID</label>
+          <label htmlFor="memberId" style={labelStyle}>Member ID</label>
           <input
             id="memberId"
             type="text"
@@ -253,13 +263,13 @@ export default function PatientForm({
             value={formData.memberId}
             onChange={handleChange}
             placeholder="e.g. DD8847291"
-            className={`${inputClass} ${inputFocusClass} font-mono`}
-            style={inputStyle}
+            className={`${inputClass} font-mono`}
+            style={{ fontFamily: "var(--font-mono)" }}
           />
         </div>
 
         <div>
-          <label htmlFor="groupId" className={labelClass}>Group ID</label>
+          <label htmlFor="groupId" style={labelStyle}>Group ID</label>
           <input
             id="groupId"
             type="text"
@@ -267,21 +277,21 @@ export default function PatientForm({
             value={formData.groupId}
             onChange={handleChange}
             placeholder="e.g. GRP-45892"
-            className={`${inputClass} ${inputFocusClass} font-mono`}
-            style={inputStyle}
+            className={`${inputClass} font-mono`}
+            style={{ fontFamily: "var(--font-mono)" }}
           />
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label htmlFor="requestedTreatment" className={labelClass} style={{ marginBottom: 0 }}>Requested Treatment</label>
+            <label htmlFor="requestedTreatment" style={{ ...labelStyle, marginBottom: 0 }}>Requested Treatment</label>
             {selectedRisk && (
               <div className="flex items-center gap-1">
                 <div
                   className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: selectedRisk.dot }}
+                  style={{ background: selectedRisk.color }}
                 />
-                <span className="text-[9px] font-medium" style={{ color: selectedRisk.dot }}>
+                <span className="text-[9px] font-medium" style={{ color: selectedRisk.color }}>
                   {selectedRisk.label} risk
                 </span>
               </div>
@@ -292,8 +302,7 @@ export default function PatientForm({
             name="requestedTreatment"
             value={formData.requestedTreatment}
             onChange={handleChange}
-            className={`${inputClass} ${inputFocusClass}`}
-            style={inputStyle}
+            className={inputClass}
           >
             <option value="">Select treatment...</option>
             {TREATMENTS.map((t) => (
@@ -303,26 +312,27 @@ export default function PatientForm({
         </div>
 
         <div>
-          <label htmlFor="appointmentDate" className={labelClass}>Appointment Date</label>
+          <label htmlFor="appointmentDate" style={labelStyle}>Appointment Date</label>
           <input
             id="appointmentDate"
             type="date"
             name="appointmentDate"
             value={formData.appointmentDate}
             onChange={handleChange}
-            className={`${inputClass} ${inputFocusClass}`}
-            style={inputStyle}
+            className={inputClass}
           />
         </div>
 
         {/* ── Demo patient cards ──────────────────── */}
         <div className="pt-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-2.5" style={{ color: "#1e293b" }}>
+          <p
+            className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-2.5"
+            style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}
+          >
             Demo Patients
           </p>
           <div className="flex flex-col gap-2">
             {SAMPLE_PATIENTS.map((p, i) => {
-              const avatarColor = AVATAR_COLORS[i % AVATAR_COLORS.length];
               const outcome = OUTCOME_CONFIG[i];
               return (
                 <button
@@ -330,31 +340,30 @@ export default function PatientForm({
                   onClick={() => { onChange(p); }}
                   className="text-left rounded-lg patient-card"
                   style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    background: "var(--color-surface-raised)",
+                    border: "1px solid var(--color-border-subtle)",
                     padding: "10px 12px",
                   }}
                 >
                   <div className="flex items-center gap-2.5">
-                    {/* Avatar */}
+                    {/* Avatar — emerald gradient */}
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
-                      style={{
-                        background: avatarColor.bg,
-                        border: `1px solid ${avatarColor.border}`,
-                        color: avatarColor.text,
-                      }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-[11px] font-bold text-white"
+                      style={{ background: AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length] }}
                     >
                       {getInitials(p.patientName)}
                     </div>
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="text-[12px] font-semibold truncate" style={{ color: "#94a3b8" }}>
+                        <span
+                          className="text-[12px] font-semibold truncate"
+                          style={{ color: "var(--color-text)", fontFamily: "var(--font-display)" }}
+                        >
                           {p.patientName}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ml-1"
+                          className="text-[9px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ml-1 uppercase"
                           style={{
                             background: outcome.bg,
                             border: `1px solid ${outcome.border}`,
@@ -364,7 +373,10 @@ export default function PatientForm({
                           {outcome.label}
                         </span>
                       </div>
-                      <span className="text-[10px] block mt-0.5 truncate" style={{ color: "#1e293b" }}>
+                      <span
+                        className="text-[10px] block mt-0.5 truncate"
+                        style={{ color: "var(--color-text-muted)" }}
+                      >
                         {p.requestedTreatment} · {p.payerName}
                       </span>
                     </div>
@@ -378,20 +390,45 @@ export default function PatientForm({
 
       {/* ── CTA button ────────────────────────────── */}
       <div
-        className="px-5 py-4 border-t flex-shrink-0"
-        style={{ borderColor: "rgba(255,255,255,0.05)" }}
+        className="px-5 py-4 flex-shrink-0"
+        style={{ borderTop: "1px solid var(--color-border)" }}
       >
+        {/* Connection status */}
+        <div className="flex items-center gap-1.5 mb-3">
+          <div
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: "var(--color-success)" }}
+          />
+          <span
+            className="text-[10px]"
+            style={{ color: "var(--color-text-muted)" }}
+          >
+            Connected to verification service
+          </span>
+        </div>
+
         <button
           onClick={onSubmit}
           disabled={!canSubmit}
-          className="w-full py-2.5 px-4 rounded-lg font-semibold text-[13px] text-white btn-shimmer transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+          className="w-full py-2.5 px-4 rounded-lg font-semibold text-[13px] text-white btn-shimmer transition-all active:scale-[0.98] disabled:opacity-45 disabled:cursor-not-allowed disabled:pointer-events-none"
           style={{
             background: isRunning
-              ? "linear-gradient(135deg, #4338ca, #3730a3)"
-              : "linear-gradient(135deg, #6366f1, #4f46e5)",
-            boxShadow: canSubmit && !isRunning
-              ? "0 0 24px rgba(99,102,241,0.3), 0 1px 3px rgba(0,0,0,0.4)"
-              : "none",
+              ? "var(--color-primary-hover)"
+              : "var(--color-primary)",
+            fontFamily: "var(--font-sans)",
+            borderRadius: "8px",
+            transform: canSubmit && !isRunning ? undefined : undefined,
+            transition: "background var(--duration-fast), transform var(--duration-fast), box-shadow var(--duration-fast)",
+          }}
+          onMouseEnter={(e) => {
+            if (canSubmit && !isRunning) {
+              (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
+              (e.currentTarget as HTMLButtonElement).style.background = "var(--color-primary-hover)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = "";
+            (e.currentTarget as HTMLButtonElement).style.background = isRunning ? "var(--color-primary-hover)" : "var(--color-primary)";
           }}
         >
           {isRunning ? (

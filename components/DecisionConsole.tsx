@@ -30,14 +30,23 @@ function SectionCard({
   return (
     <div
       className="rounded-xl overflow-hidden mb-3 card-shadow"
-      style={{ background: "#0a0e1a", border: "1px solid rgba(255,255,255,0.05)" }}
+      style={{
+        background: "var(--color-surface)",
+        border: "1px solid var(--color-border)",
+      }}
     >
       <div
         className="flex items-center gap-2 px-4 py-2.5 border-b"
-        style={{ borderColor: "rgba(255,255,255,0.04)" }}
+        style={{
+          background: "var(--color-surface-raised)",
+          borderColor: "var(--color-border-subtle)",
+        }}
       >
-        <span style={{ color: "#6366f1" }}>{icon}</span>
-        <h3 className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "#2d4a6b" }}>
+        <span style={{ color: "var(--color-primary)" }}>{icon}</span>
+        <h3
+          className="text-[10px] font-semibold tracking-widest uppercase"
+          style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}
+        >
           {title}
         </h3>
       </div>
@@ -49,16 +58,24 @@ function SectionCard({
 function DataRow({
   label,
   value,
-  valueClass,
+  valueStyle,
 }: {
   label: string;
   value: string | React.ReactNode;
-  valueClass?: string;
+  valueStyle?: React.CSSProperties;
 }) {
   return (
-    <div className="flex items-center justify-between py-1.5 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.03)" }}>
-      <span className="text-[11px]" style={{ color: "#334155" }}>{label}</span>
-      <span className={`text-[11px] font-medium ${valueClass || "text-[#94a3b8]"}`}>{value}</span>
+    <div
+      className="flex items-center justify-between py-1.5 border-b last:border-0"
+      style={{ borderColor: "var(--color-border-subtle)" }}
+    >
+      <span className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>{label}</span>
+      <span
+        className="text-[11px] font-medium"
+        style={{ color: "var(--color-text)", ...valueStyle }}
+      >
+        {value}
+      </span>
     </div>
   );
 }
@@ -75,8 +92,10 @@ function ConfidenceArc({ score }: { score: number }) {
   }, [score]);
 
   const offset = circumference - (current / 100) * circumference;
-  const color = score >= 85 ? "#22c55e" : score >= 65 ? "#f59e0b" : "#ef4444";
-  const trackColor = score >= 85 ? "rgba(34,197,94,0.08)" : score >= 65 ? "rgba(245,158,11,0.08)" : "rgba(239,68,68,0.08)";
+  const color =
+    score >= 85 ? "var(--color-success)" : score >= 65 ? "var(--color-warning)" : "var(--color-danger)";
+  const trackColor =
+    score >= 85 ? "var(--color-success-tint)" : score >= 65 ? "var(--color-warning-tint)" : "var(--color-danger-tint)";
   const label =
     score >= 85
       ? "High confidence — all coverage rules verified"
@@ -86,7 +105,6 @@ function ConfidenceArc({ score }: { score: number }) {
 
   return (
     <div className="flex items-center gap-4">
-      {/* Arc */}
       <div className="relative flex-shrink-0">
         <svg width="68" height="68" viewBox="0 0 68 68" className="-rotate-90">
           <circle cx="34" cy="34" r={r} fill="none" stroke={trackColor} strokeWidth="4" />
@@ -102,14 +120,18 @@ function ConfidenceArc({ score }: { score: number }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[16px] font-bold tabular-nums leading-none" style={{ color }}>
+          <span
+            className="text-[16px] font-bold tabular-nums leading-none"
+            style={{ color, fontFamily: "var(--font-mono)" }}
+          >
             {score}
           </span>
-          <span className="text-[8px] font-medium" style={{ color: "#334155" }}>PCT</span>
+          <span className="text-[8px] font-medium" style={{ color: "var(--color-text-muted)" }}>PCT</span>
         </div>
       </div>
-      {/* Label */}
-      <p className="text-[11px] leading-relaxed flex-1" style={{ color: "#334155" }}>{label}</p>
+      <p className="text-[11px] leading-relaxed flex-1" style={{ color: "var(--color-text-secondary)" }}>
+        {label}
+      </p>
     </div>
   );
 }
@@ -126,15 +148,15 @@ function BenefitBar({ used, total }: { used: number; total: number }) {
 
   const gradientColor =
     pct > 75
-      ? "linear-gradient(90deg, #6366f1, #f59e0b, #ef4444)"
+      ? "linear-gradient(90deg, var(--color-primary), var(--color-warning), var(--color-danger))"
       : pct > 50
-      ? "linear-gradient(90deg, #6366f1, #f59e0b)"
-      : "linear-gradient(90deg, #6366f1, #818cf8)";
+      ? "linear-gradient(90deg, var(--color-primary), var(--color-warning))"
+      : "var(--color-primary)";
 
   return (
     <div
       className="h-1.5 rounded-full overflow-hidden"
-      style={{ background: "rgba(255,255,255,0.04)" }}
+      style={{ background: "var(--color-border)" }}
     >
       <div
         className="h-full rounded-full"
@@ -142,7 +164,6 @@ function BenefitBar({ used, total }: { used: number; total: number }) {
           width: `${width}%`,
           background: gradientColor,
           transition: "width 1.0s cubic-bezier(0.4,0,0.2,1)",
-          boxShadow: pct > 75 ? "0 0 8px rgba(239,68,68,0.3)" : "0 0 6px rgba(99,102,241,0.3)",
         }}
       />
     </div>
@@ -167,39 +188,40 @@ function PaySplitBar({
   }, [patientPct]);
 
   return (
-    <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.03)" }}>
+    <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--color-border-subtle)" }}>
       <div className="flex justify-between mb-1.5">
-        <span className="text-[10px] font-medium" style={{ color: "#475569" }}>Cost Allocation</span>
-        <span className="text-[10px] font-mono tabular-nums" style={{ color: "#334155" }}>
+        <span className="text-[10px] font-medium" style={{ color: "var(--color-text-muted)" }}>Cost Allocation</span>
+        <span
+          className="text-[10px] tabular-nums"
+          style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-mono)" }}
+        >
           Total: {formatCurrency(total)}
         </span>
       </div>
-      {/* Split bar */}
-      <div className="h-2 rounded-full overflow-hidden flex" style={{ background: "rgba(34,197,94,0.15)" }}>
+      <div className="h-2 rounded-full overflow-hidden flex" style={{ background: "var(--color-success-tint)" }}>
         <div
           className="h-full rounded-l-full"
           style={{
             width: `${width}%`,
-            background: "linear-gradient(90deg, #ef4444, #f87171)",
+            background: "var(--color-danger)",
             transition: "width 1.0s cubic-bezier(0.4,0,0.2,1)",
           }}
         />
       </div>
-      {/* Labels */}
       <div className="flex justify-between mt-1.5">
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-sm" style={{ background: "#ef4444" }} />
-          <span className="text-[10px]" style={{ color: "#475569" }}>Patient</span>
-          <span className="text-[10px] font-semibold ml-1" style={{ color: "#f87171" }}>
+          <div className="w-2 h-2 rounded-sm" style={{ background: "var(--color-danger)" }} />
+          <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>Patient</span>
+          <span className="text-[10px] font-semibold ml-1" style={{ color: "var(--color-danger)" }}>
             {formatCurrency(patientPays)}
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-[10px] font-semibold" style={{ color: "#4ade80" }}>
+          <span className="text-[10px] font-semibold" style={{ color: "var(--color-success)" }}>
             {formatCurrency(insurancePays)}
           </span>
-          <span className="text-[10px]" style={{ color: "#475569" }}>Insurance</span>
-          <div className="w-2 h-2 rounded-sm" style={{ background: "#22c55e" }} />
+          <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>Insurance</span>
+          <div className="w-2 h-2 rounded-sm" style={{ background: "var(--color-success)" }} />
         </div>
       </div>
     </div>
@@ -209,43 +231,40 @@ function PaySplitBar({
 /* ── Decision banner configs ─────────────────────────── */
 const DECISION_CONFIG = {
   SAFE_TO_BOOK: {
-    gradient: "linear-gradient(135deg, rgba(5,46,22,0.8) 0%, rgba(6,78,59,0.4) 100%)",
-    border: "rgba(34,197,94,0.3)",
-    glow: "0 0 30px rgba(34,197,94,0.12), 0 1px 3px rgba(0,0,0,0.5)",
-    accentColor: "#22c55e",
-    textColor: "#4ade80",
-    dimColor: "#166534",
+    bg: "var(--color-success-tint)",
+    border: "var(--color-success)",
+    accentColor: "var(--color-success)",
+    textColor: "var(--color-success)",
+    dimColor: "var(--color-text-secondary)",
     label: "SAFE TO BOOK",
     iconClass: "check-ring",
     iconPath: "M5 13l4 4L19 7",
-    iconBg: "rgba(34,197,94,0.15)",
-    iconBorder: "rgba(34,197,94,0.4)",
+    iconBg: "var(--color-success-tint)",
+    iconBorder: "var(--color-success)",
   },
   BOOK_WITH_CAUTION: {
-    gradient: "linear-gradient(135deg, rgba(26,16,0,0.9) 0%, rgba(67,40,0,0.5) 100%)",
-    border: "rgba(245,158,11,0.3)",
-    glow: "0 0 30px rgba(245,158,11,0.1), 0 1px 3px rgba(0,0,0,0.5)",
-    accentColor: "#f59e0b",
-    textColor: "#fbbf24",
-    dimColor: "#78350f",
+    bg: "var(--color-warning-tint)",
+    border: "var(--color-warning)",
+    accentColor: "var(--color-warning)",
+    textColor: "var(--color-warning)",
+    dimColor: "var(--color-text-secondary)",
     label: "BOOK WITH CAUTION",
     iconClass: "warning-pulse",
     iconPath: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
-    iconBg: "rgba(245,158,11,0.12)",
-    iconBorder: "rgba(245,158,11,0.35)",
+    iconBg: "var(--color-warning-tint)",
+    iconBorder: "var(--color-warning)",
   },
   ESCALATE: {
-    gradient: "linear-gradient(135deg, rgba(31,0,0,0.9) 0%, rgba(80,10,10,0.5) 100%)",
-    border: "rgba(239,68,68,0.35)",
-    glow: "0 0 30px rgba(239,68,68,0.12), 0 1px 3px rgba(0,0,0,0.5)",
-    accentColor: "#ef4444",
-    textColor: "#f87171",
-    dimColor: "#7f1d1d",
+    bg: "var(--color-danger-tint)",
+    border: "var(--color-danger)",
+    accentColor: "var(--color-danger)",
+    textColor: "var(--color-danger)",
+    dimColor: "var(--color-text-secondary)",
     label: "ESCALATE TO HUMAN",
     iconClass: "urgent-blink",
     iconPath: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
-    iconBg: "rgba(239,68,68,0.12)",
-    iconBorder: "rgba(239,68,68,0.35)",
+    iconBg: "var(--color-danger-tint)",
+    iconBorder: "var(--color-danger)",
   },
 };
 
@@ -253,15 +272,26 @@ const DECISION_CONFIG = {
 function EmptyState({ isRunning }: { isRunning: boolean }) {
   return (
     <div className="flex flex-col h-full">
-      <div className="px-5 py-3.5 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+      <div
+        className="px-5 py-3.5 flex-shrink-0"
+        style={{
+          background: "var(--color-surface)",
+          borderBottom: "1px solid var(--color-border)",
+        }}
+      >
         <div className="flex items-center gap-2">
           <div
             className="w-1.5 h-1.5 rounded-full"
-            style={{ background: isRunning ? "#6366f1" : "#1e293b" }}
+            style={{ background: isRunning ? "var(--color-primary)" : "var(--color-border)" }}
           />
-          <h2 className="text-[13px] font-semibold text-[#e2e8f0]">Decision Console</h2>
+          <h2
+            className="text-[13px] font-semibold"
+            style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
+          >
+            Decision Console
+          </h2>
         </div>
-        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "#2d4a6b" }}>
+        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "var(--color-text-muted)" }}>
           {isRunning ? "Processing verification..." : "Verification results & actions"}
         </p>
       </div>
@@ -275,7 +305,7 @@ function EmptyState({ isRunning }: { isRunning: boolean }) {
               style={{ width: `${w}%`, height: "12px", animationDelay: `${i * 0.1}s` }}
             />
           ))}
-          <p className="text-[11px] mt-3" style={{ color: "#1e293b" }}>
+          <p className="text-[11px] mt-3" style={{ color: "var(--color-text-muted)" }}>
             Agent is analyzing coverage...
           </p>
         </div>
@@ -284,16 +314,20 @@ function EmptyState({ isRunning }: { isRunning: boolean }) {
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
             style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.05)",
+              background: "var(--color-surface-raised)",
+              border: "1px solid var(--color-border)",
             }}
           >
-            <svg className="w-6 h-6" style={{ color: "#1e293b" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-6 h-6"
+              style={{ color: "var(--color-text-faint)" }}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p className="text-[12px] font-medium" style={{ color: "#1e293b" }}>Awaiting verification</p>
-          <p className="text-[11px] mt-1" style={{ color: "#0f172a" }}>
+          <p className="text-[12px] font-medium" style={{ color: "var(--color-text-muted)" }}>Awaiting verification</p>
+          <p className="text-[11px] mt-1" style={{ color: "var(--color-text-faint)" }}>
             Results will appear here after the agent completes
           </p>
         </div>
@@ -310,7 +344,7 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
   useEffect(() => {
     setActionTaken(null);
     setScriptExpanded(false);
-  }, [result]); // depend on object reference, not just verificationId
+  }, [result]);
 
   if (!result && !isRunning) return <EmptyState isRunning={false} />;
   if (isRunning && !result) return <EmptyState isRunning={true} />;
@@ -331,44 +365,53 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
 
   const dc = DECISION_CONFIG[bookingRecommendation.decision];
 
-  const statusColors: Record<string, string> = {
-    ACTIVE: "text-[#4ade80]",
-    INACTIVE: "text-[#f87171]",
-    PENDING: "text-[#fbbf24]",
+  const statusColors: Record<string, React.CSSProperties> = {
+    ACTIVE:   { color: "var(--color-success)" },
+    INACTIVE: { color: "var(--color-danger)" },
+    PENDING:  { color: "var(--color-warning)" },
   };
   const statusBadge: Record<string, React.CSSProperties> = {
-    ACTIVE: { background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)" },
-    INACTIVE: { background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)" },
-    PENDING: { background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.25)" },
+    ACTIVE:   { background: "var(--color-success-tint)", border: "1px solid var(--color-success)" },
+    INACTIVE: { background: "var(--color-danger-tint)",  border: "1px solid var(--color-danger)" },
+    PENDING:  { background: "var(--color-warning-tint)", border: "1px solid var(--color-warning)" },
   };
 
   return (
     <div className="flex flex-col h-full">
       {/* ── Panel header ──────────────────────────── */}
       <div
-        className="px-5 py-3.5 border-b flex-shrink-0"
-        style={{ borderColor: "rgba(255,255,255,0.05)" }}
+        className="px-5 py-3.5 flex-shrink-0"
+        style={{
+          background: "var(--color-surface)",
+          borderBottom: "1px solid var(--color-border)",
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div
               className="w-1.5 h-1.5 rounded-full"
-              style={{ background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.5)" }}
+              style={{ background: "var(--color-success)" }}
             />
-            <h2 className="text-[13px] font-semibold text-[#e2e8f0]">Decision Console</h2>
+            <h2
+              className="text-[13px] font-semibold"
+              style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
+            >
+              Decision Console
+            </h2>
           </div>
           <span
-            className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+            className="text-[9px] px-1.5 py-0.5 rounded"
             style={{
-              color: "#1e293b",
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.05)",
+              color: "var(--color-text-faint)",
+              background: "var(--color-surface-raised)",
+              border: "1px solid var(--color-border-subtle)",
+              fontFamily: "var(--font-mono)",
             }}
           >
             {verificationId}
           </span>
         </div>
-        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "#2d4a6b" }}>
+        <p className="text-[11px] mt-0.5 ml-3.5" style={{ color: "var(--color-text-muted)" }}>
           {new Date(timestamp).toLocaleString("en-US", {
             month: "short",
             day: "numeric",
@@ -385,29 +428,35 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
         <div
           className="rounded-xl p-4 mb-3 fade-in-up"
           style={{
-            background: dc.gradient,
+            background: dc.bg,
             border: `1px solid ${dc.border}`,
-            boxShadow: dc.glow,
+            borderLeft: `3px solid ${dc.border}`,
           }}
         >
           <div className="flex items-center gap-3 mb-3">
-            {/* Icon */}
             <div
               className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${dc.iconClass}`}
               style={{ background: dc.iconBg, border: `1.5px solid ${dc.iconBorder}` }}
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: dc.accentColor }}>
+              <svg
+                className="w-5 h-5"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                style={{ color: dc.accentColor }}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dc.iconPath} />
               </svg>
             </div>
             <div className="flex-1 min-w-0">
               <div
-                className="text-[13px] font-bold tracking-wide"
-                style={{ color: dc.textColor }}
+                className="text-[14px] font-bold tracking-wide"
+                style={{ color: dc.textColor, fontFamily: "var(--font-display)" }}
               >
                 {dc.label}
               </div>
-              <div className="text-[11px] leading-relaxed mt-0.5" style={{ color: dc.dimColor }}>
+              <div
+                className="text-[11px] leading-relaxed mt-0.5"
+                style={{ color: dc.dimColor }}
+              >
                 {bookingRecommendation.reason}
               </div>
             </div>
@@ -416,7 +465,10 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
           {/* Action steps */}
           <div
             className="rounded-lg p-3 space-y-1.5"
-            style={{ background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)" }}
+            style={{
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border-subtle)",
+            }}
           >
             {bookingRecommendation.actionSteps.map((step, i) => (
               <div key={i} className="flex items-start gap-2">
@@ -426,7 +478,9 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
                 >
                   {i + 1}
                 </div>
-                <span className="text-[11px] leading-relaxed" style={{ color: "#64748b" }}>{step}</span>
+                <span className="text-[11px] leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+                  {step}
+                </span>
               </div>
             ))}
           </div>
@@ -445,8 +499,8 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
             label="Status"
             value={
               <span
-                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusColors[eligibility.status]}`}
-                style={statusBadge[eligibility.status]}
+                className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                style={{ ...statusBadge[eligibility.status], ...statusColors[eligibility.status] }}
               >
                 {eligibility.status}
               </span>
@@ -456,13 +510,13 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
           <DataRow
             label="Plan Name"
             value={eligibility.planName}
-            valueClass="text-[#64748b] truncate max-w-[180px]"
+            valueStyle={{ color: "var(--color-text-secondary)", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
           />
           <DataRow label="Coverage Period" value={eligibility.coveragePeriod} />
           <DataRow
             label="Payer Phone"
             value={eligibility.payerPhone}
-            valueClass="text-[#6366f1] font-mono"
+            valueStyle={{ color: "var(--color-primary)", fontFamily: "var(--font-mono)" }}
           />
         </SectionCard>
 
@@ -477,8 +531,11 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
         >
           <div className="mb-3">
             <div className="flex justify-between mb-1.5">
-              <span className="text-[10px]" style={{ color: "#334155" }}>Annual Maximum Used</span>
-              <span className="text-[10px] font-mono tabular-nums" style={{ color: "#475569" }}>
+              <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>Annual Maximum Used</span>
+              <span
+                className="text-[10px] tabular-nums"
+                style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-mono)" }}
+              >
                 {formatCurrency(benefits.annualMaximumUsed)} / {formatCurrency(benefits.annualMaximum)}
               </span>
             </div>
@@ -487,9 +544,10 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
           <DataRow
             label="Remaining Benefit"
             value={formatCurrency(benefits.remainingBenefit)}
-            valueClass={
-              benefits.remainingBenefit < 500 ? "text-[#f87171] font-semibold" : "text-[#4ade80] font-semibold"
-            }
+            valueStyle={{
+              color: benefits.remainingBenefit < 500 ? "var(--color-danger)" : "var(--color-success)",
+              fontWeight: 600,
+            }}
           />
           <DataRow
             label="Deductible"
@@ -498,14 +556,14 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
                 ? "Met"
                 : `${formatCurrency(benefits.deductibleRemaining)} remaining`
             }
-            valueClass={benefits.deductibleMet ? "text-[#4ade80]" : "text-[#fbbf24]"}
+            valueStyle={{ color: benefits.deductibleMet ? "var(--color-success)" : "var(--color-warning)" }}
           />
           <DataRow
             label="Waiting Period"
             value={benefits.waitingPeriod}
-            valueClass={benefits.waitingPeriod === "None" ? "text-[#4ade80]" : "text-[#fbbf24]"}
+            valueStyle={{ color: benefits.waitingPeriod === "None" ? "var(--color-success)" : "var(--color-warning)" }}
           />
-          <DataRow label="In-Network" value={`${benefits.inNetworkCoverage}%`} valueClass="text-[#4ade80]" />
+          <DataRow label="In-Network" value={`${benefits.inNetworkCoverage}%`} valueStyle={{ color: "var(--color-success)" }} />
           <DataRow label="Out-of-Network" value={`${benefits.outOfNetworkCoverage}%`} />
         </SectionCard>
 
@@ -521,27 +579,32 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
           <DataRow
             label="Covered"
             value={treatmentCoverage.covered ? "Yes" : "NOT COVERED"}
-            valueClass={treatmentCoverage.covered ? "text-[#4ade80] font-semibold" : "text-[#f87171] font-semibold"}
+            valueStyle={{
+              color: treatmentCoverage.covered ? "var(--color-success)" : "var(--color-danger)",
+              fontWeight: 600,
+            }}
           />
           <DataRow label="Coverage %" value={`${treatmentCoverage.coveragePercentage}%`} />
           <DataRow
             label="Frequency Limit"
             value={treatmentCoverage.frequencyLimit}
-            valueClass="text-right max-w-[160px] text-[#64748b]"
+            valueStyle={{ color: "var(--color-text-secondary)", textAlign: "right", maxWidth: "160px" }}
           />
           <DataRow
             label="Pre-Auth Required"
             value={treatmentCoverage.preAuthRequired ? "YES — Required" : "No"}
-            valueClass={treatmentCoverage.preAuthRequired ? "text-[#f87171] font-semibold" : "text-[#4ade80]"}
+            valueStyle={{
+              color: treatmentCoverage.preAuthRequired ? "var(--color-danger)" : "var(--color-success)",
+              fontWeight: treatmentCoverage.preAuthRequired ? 600 : undefined,
+            }}
           />
-          {/* Pay split */}
           <PaySplitBar
             patientPays={treatmentCoverage.estimatedPatientResponsibility}
             insurancePays={treatmentCoverage.estimatedInsurancePays}
           />
           {treatmentCoverage.notes && (
-            <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.03)" }}>
-              <p className="text-[10px] leading-relaxed" style={{ color: "#334155" }}>
+            <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--color-border-subtle)" }}>
+              <p className="text-[10px] leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
                 {treatmentCoverage.notes}
               </p>
             </div>
@@ -563,29 +626,35 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
         {/* ── Patient Script ──────────────────────── */}
         <div
           className="rounded-xl overflow-hidden mb-3 card-shadow"
-          style={{ background: "#0a0e1a", border: "1px solid rgba(255,255,255,0.05)" }}
+          style={{
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+          }}
         >
           <button
             onClick={() => setScriptExpanded(!scriptExpanded)}
             className="w-full flex items-center justify-between px-4 py-2.5 border-b transition-colors"
             style={{
-              borderColor: "rgba(255,255,255,0.04)",
-              background: scriptExpanded ? "rgba(99,102,241,0.04)" : "transparent",
+              borderColor: "var(--color-border-subtle)",
+              background: scriptExpanded ? "var(--color-primary-tint)" : "var(--color-surface-raised)",
             }}
           >
             <div className="flex items-center gap-2">
-              <span style={{ color: "#6366f1" }}>
+              <span style={{ color: "var(--color-primary)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </span>
-              <h3 className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "#2d4a6b" }}>
+              <h3
+                className="text-[10px] font-semibold tracking-widest uppercase"
+                style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}
+              >
                 Patient-Facing Script
               </h3>
             </div>
             <svg
               className={`w-3.5 h-3.5 transition-transform duration-200 ${scriptExpanded ? "rotate-180" : ""}`}
-              style={{ color: "#1e293b" }}
+              style={{ color: "var(--color-text-faint)" }}
               fill="none" viewBox="0 0 24 24" stroke="currentColor"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -596,23 +665,32 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
               <div
                 className="rounded-lg p-3"
                 style={{
-                  background: "rgba(99,102,241,0.04)",
-                  border: "1px solid rgba(99,102,241,0.1)",
+                  background: "var(--color-primary-tint)",
+                  border: "1px solid var(--color-primary-mid)",
                 }}
               >
-                <p className="text-[11px] leading-relaxed italic" style={{ color: "#64748b" }}>
+                <p
+                  className="text-[11px] leading-relaxed italic"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
                   &ldquo;{patientScript}&rdquo;
                 </p>
               </div>
               {internalSummary && (
                 <div
                   className="mt-2 rounded-lg p-3"
-                  style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}
+                  style={{
+                    background: "var(--color-surface-raised)",
+                    border: "1px solid var(--color-border-subtle)",
+                  }}
                 >
-                  <p className="text-[9px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: "#1e293b" }}>
+                  <p
+                    className="text-[9px] font-semibold uppercase tracking-widest mb-1.5"
+                    style={{ color: "var(--color-text-faint)", fontFamily: "var(--font-sans)" }}
+                  >
                     Internal Billing Note
                   </p>
-                  <p className="text-[11px] leading-relaxed" style={{ color: "#334155" }}>
+                  <p className="text-[11px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
                     {internalSummary}
                   </p>
                 </div>
@@ -624,9 +702,15 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
         {/* ── Agent Confidence ────────────────────── */}
         <div
           className="rounded-xl p-4 mb-3 card-shadow"
-          style={{ background: "#0a0e1a", border: "1px solid rgba(255,255,255,0.05)" }}
+          style={{
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+          }}
         >
-          <p className="text-[10px] font-semibold tracking-widest uppercase mb-3" style={{ color: "#2d4a6b" }}>
+          <p
+            className="text-[10px] font-semibold tracking-widest uppercase mb-3"
+            style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}
+          >
             Agent Confidence
           </p>
           <ConfidenceArc score={confidenceScore} />
@@ -636,31 +720,45 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
         {!actionTaken ? (
           <div
             className="rounded-xl p-4 mb-3 card-shadow"
-            style={{ background: "#0a0e1a", border: "1px solid rgba(255,255,255,0.05)" }}
+            style={{
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+            }}
           >
-            <p className="text-[10px] font-semibold tracking-widest uppercase mb-3" style={{ color: "#2d4a6b" }}>
+            <p
+              className="text-[10px] font-semibold tracking-widest uppercase mb-3"
+              style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}
+            >
               Reviewer Actions
             </p>
             <div className="flex flex-col gap-2">
+              {/* Approve button — emerald primary */}
               <button
                 onClick={() => setActionTaken("approved")}
                 className="w-full py-2.5 px-4 rounded-lg text-[13px] font-semibold text-white flex items-center justify-center gap-2 btn-shimmer transition-all active:scale-[0.98]"
                 style={{
-                  background: "linear-gradient(135deg, #16a34a, #15803d)",
-                  boxShadow: "0 0 20px rgba(34,197,94,0.2), 0 1px 3px rgba(0,0,0,0.4)",
+                  background: "var(--color-primary)",
+                  fontFamily: "var(--font-sans)",
+                  borderRadius: "8px",
                 }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-primary-hover)"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-primary)"; (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Approve &amp; Schedule
               </button>
+              {/* Edit button — outlined primary */}
               <button
                 onClick={() => setActionTaken("edited")}
-                className="w-full py-2.5 px-4 rounded-lg text-[13px] font-semibold text-white flex items-center justify-center gap-2 btn-shimmer transition-all active:scale-[0.98]"
+                className="w-full py-2.5 px-4 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-2 btn-shimmer transition-all active:scale-[0.98]"
                 style={{
-                  background: "linear-gradient(135deg, #4f46e5, #4338ca)",
-                  boxShadow: "0 0 20px rgba(99,102,241,0.2), 0 1px 3px rgba(0,0,0,0.4)",
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-primary)",
+                  color: "var(--color-primary)",
+                  fontFamily: "var(--font-sans)",
+                  borderRadius: "8px",
                 }}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -668,12 +766,16 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
                 </svg>
                 Edit &amp; Approve
               </button>
+              {/* Escalate button — danger tint */}
               <button
                 onClick={() => setActionTaken("escalated")}
-                className="w-full py-2.5 px-4 rounded-lg text-[13px] font-semibold text-white flex items-center justify-center gap-2 btn-shimmer transition-all active:scale-[0.98]"
+                className="w-full py-2.5 px-4 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-2 btn-shimmer transition-all active:scale-[0.98]"
                 style={{
-                  background: "linear-gradient(135deg, #b91c1c, #991b1b)",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+                  background: "var(--color-danger-tint)",
+                  border: "1px solid var(--color-danger)",
+                  color: "var(--color-danger)",
+                  fontFamily: "var(--font-sans)",
+                  borderRadius: "8px",
                 }}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -689,16 +791,16 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
             style={{
               background:
                 actionTaken === "approved"
-                  ? "linear-gradient(135deg, rgba(5,46,22,0.8), rgba(6,78,59,0.4))"
+                  ? "var(--color-success-tint)"
                   : actionTaken === "edited"
-                  ? "linear-gradient(135deg, rgba(26,22,50,0.9), rgba(49,46,129,0.4))"
-                  : "linear-gradient(135deg, rgba(31,0,0,0.9), rgba(80,10,10,0.4))",
+                  ? "var(--color-primary-tint)"
+                  : "var(--color-danger-tint)",
               border: `1px solid ${
                 actionTaken === "approved"
-                  ? "rgba(34,197,94,0.25)"
+                  ? "var(--color-success)"
                   : actionTaken === "edited"
-                  ? "rgba(99,102,241,0.25)"
-                  : "rgba(239,68,68,0.25)"
+                  ? "var(--color-primary)"
+                  : "var(--color-danger)"
               }`,
             }}
           >
@@ -707,16 +809,16 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
               style={{
                 background:
                   actionTaken === "approved"
-                    ? "rgba(34,197,94,0.15)"
+                    ? "var(--color-success-tint)"
                     : actionTaken === "edited"
-                    ? "rgba(99,102,241,0.15)"
-                    : "rgba(239,68,68,0.15)",
+                    ? "var(--color-primary-tint)"
+                    : "var(--color-danger-tint)",
                 border: `1.5px solid ${
                   actionTaken === "approved"
-                    ? "rgba(34,197,94,0.35)"
+                    ? "var(--color-success)"
                     : actionTaken === "edited"
-                    ? "rgba(99,102,241,0.35)"
-                    : "rgba(239,68,68,0.35)"
+                    ? "var(--color-primary)"
+                    : "var(--color-danger)"
                 }`,
               }}
             >
@@ -725,7 +827,11 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
                 fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 style={{
                   color:
-                    actionTaken === "approved" ? "#4ade80" : actionTaken === "edited" ? "#818cf8" : "#f87171",
+                    actionTaken === "approved"
+                      ? "var(--color-success)"
+                      : actionTaken === "edited"
+                      ? "var(--color-primary)"
+                      : "var(--color-danger)",
                 }}
               >
                 {actionTaken === "approved" ? (
@@ -741,7 +847,12 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
               className="text-[13px] font-semibold"
               style={{
                 color:
-                  actionTaken === "approved" ? "#4ade80" : actionTaken === "edited" ? "#818cf8" : "#f87171",
+                  actionTaken === "approved"
+                    ? "var(--color-success)"
+                    : actionTaken === "edited"
+                    ? "var(--color-primary)"
+                    : "var(--color-danger)",
+                fontFamily: "var(--font-display)",
               }}
             >
               {actionTaken === "approved"
@@ -750,7 +861,10 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
                 ? "Sent for Edit Review"
                 : "Escalated to Senior Reviewer"}
             </p>
-            <p className="text-[10px] mt-1 font-mono tabular-nums" style={{ color: "#1e293b" }}>
+            <p
+              className="text-[10px] mt-1 tabular-nums"
+              style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}
+            >
               {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
             </p>
           </div>
@@ -759,20 +873,22 @@ export default function DecisionConsole({ result, isRunning, patientName }: Deci
         {/* ── Powered by Claude ────────────────────── */}
         <div
           className="flex items-center justify-center gap-2 py-3 mb-1 rounded-lg"
-          style={{ opacity: 0.35 }}
+          style={{ opacity: 0.40 }}
         >
-          {/* Anthropic diamond shape */}
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ color: "#6366f1" }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ color: "var(--color-primary)" }}>
             <path
               d="M12 2L22 12L12 22L2 12L12 2Z"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinejoin="round"
-              fill="rgba(99,102,241,0.2)"
+              fill="var(--color-primary-tint)"
             />
             <path d="M12 7L17 12L12 17L7 12L12 7Z" fill="currentColor" opacity="0.6" />
           </svg>
-          <span className="text-[10px] font-medium tracking-wide" style={{ color: "#334155" }}>
+          <span
+            className="text-[10px] font-medium tracking-wide"
+            style={{ color: "var(--color-text-muted)" }}
+          >
             Powered by Claude
           </span>
         </div>

@@ -8,22 +8,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: '#0a0a0a',
-        panel: '#111111',
-        card: '#161616',
-        border: '#222222',
-        'border-light': '#2a2a2a',
-        accent: '#6366f1',
-        'accent-hover': '#818cf8',
+        // Koshika design tokens (OKLCH values approximated for Tailwind)
+        'koshika-bg':      'oklch(98.5% 0.008 80)',
+        'koshika-surface': 'oklch(99.5% 0.004 80)',
+        'koshika-primary': 'oklch(40% 0.16 158)',
+        'koshika-border':  'oklch(91% 0.012 158)',
+        'koshika-text':    'oklch(13% 0.022 158)',
+        'koshika-muted':   'oklch(62% 0.010 158)',
+        // Legacy aliases kept for compatibility
         success: '#22c55e',
         warning: '#f59e0b',
         danger: '#ef4444',
-        'text-primary': '#f1f5f9',
-        'text-muted': '#64748b',
-        'text-subtle': '#94a3b8',
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Afacad', 'Georgia', 'serif'],
+        sans: ['Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       animation: {

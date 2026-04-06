@@ -15,12 +15,12 @@ function StepIcon({ status }: { status: AgentStep["status"] }) {
       <div
         className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
         style={{
-          background: "rgba(99,102,241,0.12)",
-          border: "1.5px solid rgba(99,102,241,0.6)",
-          boxShadow: "0 0 12px rgba(99,102,241,0.25)",
+          background: "var(--color-primary-tint)",
+          border: "1.5px solid var(--color-primary)",
+          boxShadow: "0 0 10px oklch(40% 0.16 158 / 0.18)",
         }}
       >
-        <svg className="animate-spin h-3.5 w-3.5 text-[#818cf8]" fill="none" viewBox="0 0 24 24">
+        <svg className="animate-spin h-3.5 w-3.5" style={{ color: "var(--color-primary)" }} fill="none" viewBox="0 0 24 24">
           <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
           <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
@@ -32,12 +32,12 @@ function StepIcon({ status }: { status: AgentStep["status"] }) {
       <div
         className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
         style={{
-          background: "rgba(34,197,94,0.1)",
-          border: "1.5px solid rgba(34,197,94,0.4)",
-          boxShadow: "0 0 8px rgba(34,197,94,0.15)",
+          background: "var(--color-success-tint)",
+          border: "1.5px solid var(--color-success)",
+          boxShadow: "0 0 8px oklch(52% 0.18 142 / 0.12)",
         }}
       >
-        <svg className="w-3.5 h-3.5 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
         </svg>
       </div>
@@ -48,11 +48,11 @@ function StepIcon({ status }: { status: AgentStep["status"] }) {
       <div
         className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
         style={{
-          background: "rgba(239,68,68,0.1)",
-          border: "1.5px solid rgba(239,68,68,0.4)",
+          background: "var(--color-danger-tint)",
+          border: "1.5px solid var(--color-danger)",
         }}
       >
-        <svg className="w-3.5 h-3.5 text-[#ef4444]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-3.5 h-3.5" style={{ color: "var(--color-danger)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
@@ -61,9 +61,9 @@ function StepIcon({ status }: { status: AgentStep["status"] }) {
   return (
     <div
       className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-      style={{ background: "rgba(255,255,255,0.02)", border: "1.5px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "var(--color-surface-raised)", border: "1.5px solid var(--color-border)" }}
     >
-      <div className="w-1.5 h-1.5 rounded-full bg-[#1e293b]" />
+      <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-text-faint)" }} />
     </div>
   );
 }
@@ -90,10 +90,10 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
               flexGrow: 1,
               minHeight: "20px",
               background: isCompleted
-                ? "linear-gradient(to bottom, rgba(34,197,94,0.4), rgba(34,197,94,0.05))"
+                ? "linear-gradient(to bottom, var(--color-success), transparent)"
                 : isRunning
-                ? "linear-gradient(to bottom, rgba(99,102,241,0.4), rgba(99,102,241,0.05))"
-                : "rgba(255,255,255,0.04)",
+                ? "linear-gradient(to bottom, var(--color-primary), transparent)"
+                : "var(--color-border-subtle)",
             }}
           />
         )}
@@ -101,34 +101,37 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
 
       {/* Step card */}
       <div
-        className={`flex-1 pb-4 transition-all duration-300 ${
-          isActive ? "opacity-100" : "opacity-25"
-        }`}
+        className={`flex-1 pb-4 transition-all duration-300 ${isActive ? "opacity-100" : "opacity-35"}`}
       >
         <div
           className={`rounded-lg px-3 py-2.5 mb-0.5 transition-all duration-300 ${
-            isRunning
-              ? "step-running-glow bg-[#0d1022] border border-[#6366f1]/20"
-              : isCompleted
-              ? "bg-transparent"
-              : "bg-transparent"
+            isRunning ? "step-running-glow" : ""
           }`}
+          style={
+            isRunning
+              ? {
+                  background: "var(--color-primary-tint)",
+                  border: "1px solid var(--color-primary-mid)",
+                }
+              : {}
+          }
         >
           {/* Step header */}
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <span className={`text-[13px] font-semibold leading-tight ${
-                isRunning ? "text-[#c7d2fe]" : isCompleted ? "text-[#e2e8f0]" : "text-[#334155]"
-              }`}>
+              <span
+                className="text-[13px] font-semibold leading-tight"
+                style={{ color: isRunning ? "var(--color-primary)" : isCompleted ? "var(--color-text)" : "var(--color-text-muted)" }}
+              >
                 {step.name}
               </span>
               {isRunning && (
                 <span
                   className="text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest flex-shrink-0"
                   style={{
-                    background: "rgba(99,102,241,0.12)",
-                    border: "1px solid rgba(99,102,241,0.3)",
-                    color: "#818cf8",
+                    background: "var(--color-primary-tint)",
+                    border: "1px solid var(--color-primary)",
+                    color: "var(--color-primary)",
                   }}
                 >
                   RUNNING
@@ -137,15 +140,21 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
             </div>
             <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
               {step.timestamp && (
-                <span className="text-[10px] text-[#1e293b] font-mono tabular-nums">{step.timestamp}</span>
+                <span
+                  className="text-[10px] tabular-nums"
+                  style={{ color: "var(--color-text-faint)", fontFamily: "var(--font-mono)" }}
+                >
+                  {step.timestamp}
+                </span>
               )}
               {step.duration && isCompleted && (
                 <span
-                  className="text-[10px] font-mono tabular-nums px-1.5 py-0.5 rounded"
+                  className="text-[10px] tabular-nums px-1.5 py-0.5 rounded"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    color: "#334155",
+                    background: "var(--color-surface-raised)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-text-muted)",
+                    fontFamily: "var(--font-mono)",
                   }}
                 >
                   {step.duration}ms
@@ -155,9 +164,10 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
           </div>
 
           {/* Description */}
-          <p className={`text-[12px] leading-relaxed mt-0.5 ${
-            isRunning ? "text-[#4a5568]" : "text-[#334155]"
-          }`}>
+          <p
+            className="text-[12px] leading-relaxed mt-0.5"
+            style={{ color: "var(--color-text-muted)" }}
+          >
             {step.description}
           </p>
 
@@ -166,7 +176,7 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
             <button
               onClick={() => setExpanded(!expanded)}
               className="mt-2 flex items-center gap-1 transition-colors group"
-              style={{ color: expanded ? "#6366f1" : "#1e293b" }}
+              style={{ color: expanded ? "var(--color-primary)" : "var(--color-text-faint)" }}
             >
               <svg
                 className={`w-3 h-3 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
@@ -174,7 +184,10 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-              <span className="text-[10px] font-medium group-hover:text-[#6366f1] transition-colors">
+              <span
+                className="text-[10px] font-medium"
+                style={{ color: "inherit" }}
+              >
                 {expanded ? "Hide" : "View"} evidence
               </span>
             </button>
@@ -185,25 +198,33 @@ function StepRow({ step, isLast, index }: { step: AgentStep; isLast: boolean; in
             <div
               className="mt-2 rounded-lg overflow-hidden"
               style={{
-                background: "#050810",
-                border: "1px solid rgba(255,255,255,0.05)",
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
               }}
             >
               {/* Editor header bar */}
               <div
                 className="flex items-center gap-1.5 px-3 py-1.5 border-b"
-                style={{ borderColor: "rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.02)" }}
+                style={{
+                  borderColor: "var(--color-border-subtle)",
+                  background: "var(--color-surface-raised)",
+                }}
               >
-                <div className="w-2 h-2 rounded-full bg-[#ef4444]/40" />
-                <div className="w-2 h-2 rounded-full bg-[#f59e0b]/40" />
-                <div className="w-2 h-2 rounded-full bg-[#22c55e]/40" />
-                <span className="text-[9px] text-[#1e293b] font-mono ml-1">evidence.json</span>
+                <div className="w-2 h-2 rounded-full" style={{ background: "oklch(58% 0.22 25 / 0.5)" }} />
+                <div className="w-2 h-2 rounded-full" style={{ background: "oklch(68% 0.18 75 / 0.5)" }} />
+                <div className="w-2 h-2 rounded-full" style={{ background: "oklch(52% 0.18 142 / 0.5)" }} />
+                <span
+                  className="text-[9px] ml-1"
+                  style={{ color: "var(--color-text-faint)", fontFamily: "var(--font-mono)" }}
+                >
+                  evidence.json
+                </span>
               </div>
               {/* Evidence content */}
               <div className="p-3 overflow-x-auto">
                 <pre
-                  className="text-[10px] font-mono leading-relaxed whitespace-pre-wrap"
-                  style={{ color: "#64748b" }}
+                  className="text-[10px] leading-relaxed whitespace-pre-wrap"
+                  style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-mono)" }}
                 >
                   {step.evidence}
                 </pre>
@@ -221,12 +242,12 @@ function ProgressArc({ pct }: { pct: number }) {
   const r = 16;
   const circumference = 2 * Math.PI * r;
   const offset = circumference - (pct / 100) * circumference;
-  const color = pct >= 100 ? "#22c55e" : "#6366f1";
+  const color = pct >= 100 ? "var(--color-success)" : "var(--color-primary)";
 
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" className="-rotate-90">
       {/* Track */}
-      <circle cx="20" cy="20" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2.5" />
+      <circle cx="20" cy="20" r={r} fill="none" stroke="var(--color-border)" strokeWidth="2.5" />
       {/* Fill */}
       <circle
         cx="20" cy="20" r={r}
@@ -249,16 +270,15 @@ function CompleteToast({ show }: { show: boolean }) {
     <div
       className="toast-complete absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full z-50 pointer-events-none"
       style={{
-        background: "rgba(34,197,94,0.12)",
-        border: "1px solid rgba(34,197,94,0.3)",
+        background: "var(--color-success-tint)",
+        border: "1px solid var(--color-success)",
         backdropFilter: "blur(8px)",
-        boxShadow: "0 0 20px rgba(34,197,94,0.15)",
       }}
     >
-      <svg className="w-3.5 h-3.5 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-3.5 h-3.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
       </svg>
-      <span className="text-[11px] font-semibold text-[#4ade80]">Verification complete</span>
+      <span className="text-[11px] font-semibold" style={{ color: "var(--color-success)" }}>Verification complete</span>
     </div>
   );
 }
@@ -271,7 +291,6 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
   const completedCount = steps.filter((s) => s.status === "completed" || s.status === "flagged").length;
   const progressPct = steps.length > 0 ? Math.round((completedCount / steps.length) * 100) : 0;
 
-  // Show toast when result first arrives
   useEffect(() => {
     if (result && !prevResultRef.current) {
       setShowToast(true);
@@ -287,8 +306,11 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
 
       {/* ── Panel header ────────────────────────────── */}
       <div
-        className="px-5 py-3.5 border-b flex-shrink-0"
-        style={{ borderColor: "rgba(255,255,255,0.05)" }}
+        className="px-5 py-3.5 flex-shrink-0"
+        style={{
+          background: "var(--color-surface)",
+          borderBottom: "1px solid var(--color-border)",
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -297,7 +319,13 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
               <div className="relative flex-shrink-0">
                 <ProgressArc pct={progressPct} />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[9px] font-bold tabular-nums" style={{ color: progressPct >= 100 ? "#22c55e" : "#6366f1" }}>
+                  <span
+                    className="text-[9px] font-bold tabular-nums"
+                    style={{
+                      color: progressPct >= 100 ? "var(--color-success)" : "var(--color-primary)",
+                      fontFamily: "var(--font-mono)",
+                    }}
+                  >
                     {progressPct > 0 ? `${progressPct}` : ""}
                   </span>
                 </div>
@@ -306,9 +334,14 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
 
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-[13px] font-semibold text-[#e2e8f0] tracking-tight">Agent Reasoning Trace</h2>
+                <h2
+                  className="text-[13px] font-semibold tracking-tight"
+                  style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
+                >
+                  Agent Reasoning Trace
+                </h2>
               </div>
-              <p className="text-[11px] mt-0.5" style={{ color: "#475569" }}>
+              <p className="text-[11px] mt-0.5" style={{ color: "var(--color-text-muted)" }}>
                 {isRunning
                   ? `Processing — ${completedCount} of ${steps.length} steps`
                   : result
@@ -323,28 +356,36 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
             <div
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
               style={{
-                background: "rgba(239,68,68,0.08)",
-                border: "1px solid rgba(239,68,68,0.2)",
+                background: "var(--color-danger-tint)",
+                border: "1px solid var(--color-danger)",
               }}
             >
               <div className="relative flex-shrink-0">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#ef4444] live-dot live-ring" />
+                <div
+                  className="w-1.5 h-1.5 rounded-full live-dot live-ring"
+                  style={{ background: "var(--color-danger)" }}
+                />
               </div>
-              <span className="text-[9px] font-bold text-[#f87171] tracking-[0.12em]">LIVE</span>
+              <span
+                className="text-[9px] font-bold tracking-[0.12em]"
+                style={{ color: "var(--color-danger)" }}
+              >
+                LIVE
+              </span>
             </div>
           )}
           {result && !isRunning && (
             <div
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
               style={{
-                background: "rgba(34,197,94,0.08)",
-                border: "1px solid rgba(34,197,94,0.2)",
+                background: "var(--color-success-tint)",
+                border: "1px solid var(--color-success)",
               }}
             >
-              <svg className="w-2.5 h-2.5 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-2.5 h-2.5" style={{ color: "var(--color-success)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
-              <span className="text-[9px] font-bold text-[#22c55e] tracking-wide">COMPLETE</span>
+              <span className="text-[9px] font-bold tracking-wide" style={{ color: "var(--color-success)" }}>COMPLETE</span>
             </div>
           )}
         </div>
@@ -353,15 +394,15 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
         {steps.length > 0 && (
           <div
             className="mt-3 h-px rounded-full overflow-hidden"
-            style={{ background: "rgba(255,255,255,0.04)" }}
+            style={{ background: "var(--color-border-subtle)" }}
           >
             <div
               className="h-full rounded-full"
               style={{
                 width: `${progressPct}%`,
                 background: progressPct >= 100
-                  ? "linear-gradient(90deg, #22c55e, #16a34a)"
-                  : "linear-gradient(90deg, #6366f1, #818cf8)",
+                  ? "var(--color-success)"
+                  : "var(--color-primary)",
                 transition: "width 0.6s cubic-bezier(0.4,0,0.2,1)",
               }}
             />
@@ -376,16 +417,20 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.05)",
+                background: "var(--color-surface-raised)",
+                border: "1px solid var(--color-border)",
               }}
             >
-              <svg className="w-5 h-5" style={{ color: "#1e293b" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="w-5 h-5"
+                style={{ color: "var(--color-text-faint)" }}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <p className="text-[13px] font-medium" style={{ color: "#475569" }}>No active verification</p>
-            <p className="text-[11px] mt-1" style={{ color: "#334155" }}>Fill in patient data and run the agent</p>
+            <p className="text-[13px] font-medium" style={{ color: "var(--color-text-muted)" }}>No active verification</p>
+            <p className="text-[11px] mt-1" style={{ color: "var(--color-text-faint)" }}>Fill in patient data and run the agent</p>
           </div>
         ) : (
           <div>
@@ -399,36 +444,48 @@ export default function AgentTimeline({ steps, isRunning, result }: AgentTimelin
         {result && (
           <div
             className="mt-4 rounded-xl overflow-hidden"
-            style={{ border: "1px solid rgba(255,255,255,0.05)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <button
               onClick={() => setJsonExpanded(!jsonExpanded)}
               className="w-full flex items-center justify-between px-4 py-3 transition-colors"
-              style={{ background: "rgba(255,255,255,0.02)" }}
+              style={{ background: "var(--color-surface-raised)" }}
             >
               <div className="flex items-center gap-2">
-                <svg className="w-3.5 h-3.5" style={{ color: "#2d4a6b" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg
+                  className="w-3.5 h-3.5"
+                  style={{ color: "var(--color-primary)" }}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
-                <span className="text-[11px] font-medium" style={{ color: "#2d4a6b" }}>Raw Agent Output</span>
+                <span className="text-[11px] font-medium" style={{ color: "var(--color-text-secondary)" }}>Raw Agent Output</span>
                 <span
-                  className="text-[9px] font-mono px-1.5 py-0.5 rounded"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)", color: "#1e293b" }}
+                  className="text-[9px] px-1.5 py-0.5 rounded"
+                  style={{
+                    background: "var(--color-primary-tint)",
+                    border: "1px solid var(--color-primary-mid)",
+                    color: "var(--color-primary)",
+                    fontFamily: "var(--font-mono)",
+                  }}
                 >
                   JSON
                 </span>
               </div>
               <svg
                 className={`w-3.5 h-3.5 transition-transform duration-200 ${jsonExpanded ? "rotate-180" : ""}`}
-                style={{ color: "#1e293b" }}
+                style={{ color: "var(--color-text-faint)" }}
                 fill="none" viewBox="0 0 24 24" stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {jsonExpanded && (
-              <div className="p-4 overflow-x-auto" style={{ background: "#04060e" }}>
-                <pre className="text-[10px] font-mono leading-relaxed whitespace-pre-wrap" style={{ color: "#475569" }}>
+              <div className="p-4 overflow-x-auto" style={{ background: "var(--color-surface)" }}>
+                <pre
+                  className="text-[10px] leading-relaxed whitespace-pre-wrap"
+                  style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}
+                >
                   {JSON.stringify(result, null, 2)}
                 </pre>
               </div>
